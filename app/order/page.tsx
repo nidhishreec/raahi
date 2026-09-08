@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
@@ -437,7 +437,7 @@ const MASTER_PUB_MENU = [
   { id: 840, name: "Mineral Water", price: 50, category: "Beverages", description: "Bottled water." },
   { id: 841, name: "Soda", price: 45, category: "Beverages", description: "Club soda." },
   { id: 842, name: "Lime Water / Soda", price: 100, category: "Beverages", description: "Fresh lime cooler." },
-  { id: 843, name: "Aerated Drinks", price: 65, category: "Beverages", description: "Cola / Sprite / Fanta." },
+  { id: 843, name: "Aerated Drinks", price: 65, category: "Beverages", description: "Logo / Sprite / Fanta." },
   { id: 844, name: "Diet Coke", price: 95, category: "Beverages", description: "Zero sugar cola." },
   { id: 845, name: "Ginger Ale", price: 105, category: "Beverages", description: "Crisp ginger beverage." },
   { id: 846, name: "Tonic Water", price: 115, category: "Beverages", description: "Schweppes tonic." },
@@ -445,7 +445,7 @@ const MASTER_PUB_MENU = [
   { id: 848, name: "Red Bull", price: 200, category: "Beverages", description: "Energy drink." }
 ];
 
-export default function OrderPage() {
+function OrderContent() {
   const searchParams = useSearchParams();
   const tableNum = searchParams.get("table") || "01";
 
@@ -834,5 +834,13 @@ export default function OrderPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function OrderPage() {
+  return (
+    <Suspense fallback={<div className="bg-[#06080C] text-[#D4AF37] min-h-screen flex items-center justify-center font-serif text-xl">Loading Raahi Menu...</div>}>
+      <OrderContent />
+    </Suspense>
   );
 }
