@@ -91,9 +91,12 @@ export default function RaahiQissaHome() {
         <div className="flex items-center gap-2 sm:gap-4">
           <button 
             onClick={() => setIsQrModalOpen(true)}
-            className="border border-[#D4AF37]/40 px-3.5 sm:px-5 py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all font-semibold cursor-pointer"
+            className="inline-flex items-center gap-1.5 border border-[#D4AF37]/40 px-3.5 sm:px-5 py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all font-semibold cursor-pointer"
           >
-            TABLE QR ↗
+            <span>TABLE QR</span>
+            <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+            </svg>
           </button>
           <button 
             onClick={() => setIsReservationOpen(true)}
@@ -137,9 +140,12 @@ export default function RaahiQissaHome() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-xs sm:max-w-none mx-auto">
             <button 
               onClick={() => setIsQrModalOpen(true)}
-              className="w-full sm:w-auto bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-7 py-3.5 rounded-full text-[10px] uppercase tracking-[0.2em] font-bold shadow-2xl hover:opacity-90 transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 w-full sm:w-auto bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-7 py-3.5 rounded-full text-[10px] uppercase tracking-[0.2em] font-bold shadow-2xl hover:opacity-90 transition-all cursor-pointer"
             >
-              Open Table QR Menu ↗
+              <span>Open Table QR Menu</span>
+              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+              </svg>
             </button>
             <Link 
               href="/admin"
@@ -252,7 +258,10 @@ export default function RaahiQissaHome() {
             href="/gallery"
             className="inline-flex items-center gap-2 border border-[#D4AF37]/50 text-[#D4AF37] px-7 py-3 rounded-full text-xs uppercase tracking-[0.3em] font-semibold hover:bg-[#D4AF37] hover:text-black transition-all shadow-lg"
           >
-            <span>VIEW FULL GALLERY ↓</span>
+            <span>VIEW FULL GALLERY</span>
+            <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
           </Link>
         </div>
 
@@ -370,9 +379,12 @@ export default function RaahiQissaHome() {
           <div className="flex justify-center gap-4">
             <button 
               onClick={() => setIsReservationOpen(true)}
-              className="bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-7 py-3 rounded-full text-[10px] uppercase tracking-widest font-bold shadow-lg hover:opacity-90 transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-7 py-3 rounded-full text-[10px] uppercase tracking-widest font-bold shadow-lg hover:opacity-90 transition-all cursor-pointer"
             >
-              Reserve a Table ↗
+              <span>Reserve a Table</span>
+              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+              </svg>
             </button>
           </div>
         </div>
@@ -402,8 +414,11 @@ export default function RaahiQissaHome() {
 
           <div className="text-center space-y-6 my-auto py-10">
             <div>
-              <button onClick={() => { setIsMenuOpen(false); setIsQrModalOpen(true); }} className="font-serif italic text-2xl sm:text-4xl text-white hover:text-[#D4AF37] transition-all duration-300 cursor-pointer bg-transparent border-none">
-                Table QR Menu <span className="text-[#D4AF37] text-lg">↗</span>
+              <button onClick={() => { setIsMenuOpen(false); setIsQrModalOpen(true); }} className="font-serif italic text-2xl sm:text-4xl text-white hover:text-[#D4AF37] transition-all duration-300 cursor-pointer bg-transparent border-none inline-flex items-center gap-2">
+                <span>Table QR Menu</span>
+                <svg className="w-5 h-5 shrink-0 text-[#D4AF37]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+                </svg>
               </button>
             </div>
             <div>
@@ -455,9 +470,12 @@ export default function RaahiQissaHome() {
 
             <Link
               href={`/order?table=${tableNum}`}
-              className="block w-full bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-lg text-center"
+              className="inline-flex items-center justify-center gap-2 w-full bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-lg text-center"
             >
-              Launch Table #{tableNum} Menu ↗
+              <span>Launch Table #{tableNum} Menu</span>
+              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+              </svg>
             </Link>
           </div>
         </div>

@@ -1,51 +1,21 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
 const MENU_CATEGORIES = [
-  "All",
-  "Soups",
-  "Salads",
-  "Bar Bites",
-  "Tandoor",
-  "Raahi Favourites",
-  "Classics & Raahi Classics",
-  "Coastal Specials",
-  "Chefs Special",
-  "Naati Specials",
-  "New Specials",
-  "Shared Plates",
-  "Pasta",
-  "Pizza",
-  "Continental",
-  "Chinese",
-  "Indian Curries",
-  "Sandwiches & Burgers",
-  "Rice & Breads",
-  "Desserts",
-  "Draught Beer",
-  "Bottled Beer",
-  "Classic Cocktails",
-  "Signature Cocktails",
-  "Signature LIIT",
-  "Signature Sangrias",
-  "Mocktails",
-  "Shooters",
-  "Vodka",
-  "Gin",
-  "Rum",
-  "Brandy",
-  "Tequila",
-  "Irish / Bourbon / Tennessee",
-  "Blended Scotch",
-  "Single Malt Whiskey",
-  "Premium Scotch",
-  "Wine",
-  "Breezer",
-  "Beverages"
+  "All", "Soups", "Salads", "Bar Bites", "Tandoor", "Raahi Favourites",
+  "Classics & Raahi Classics", "Coastal Specials", "Chefs Special", "Naati Specials",
+  "New Specials", "Shared Plates", "Pasta", "Pizza", "Continental", "Chinese",
+  "Indian Curries", "Sandwiches & Burgers", "Rice & Breads", "Desserts",
+  "Draught Beer", "Bottled Beer", "Classic Cocktails", "Signature Cocktails",
+  "Signature LIIT", "Signature Sangrias", "Mocktails", "Shooters", "Vodka",
+  "Gin", "Rum", "Brandy", "Tequila", "Irish / Bourbon / Tennessee",
+  "Blended Scotch", "Single Malt Whiskey", "Premium Scotch", "Wine", "Breezer", "Beverages"
 ];
 
 const MASTER_PUB_MENU = [
@@ -437,7 +407,7 @@ const MASTER_PUB_MENU = [
   { id: 840, name: "Mineral Water", price: 50, category: "Beverages", description: "Bottled water." },
   { id: 841, name: "Soda", price: 45, category: "Beverages", description: "Club soda." },
   { id: 842, name: "Lime Water / Soda", price: 100, category: "Beverages", description: "Fresh lime cooler." },
-  { id: 843, name: "Aerated Drinks", price: 65, category: "Beverages", description: "Logo / Sprite / Fanta." },
+  { id: 843, name: "Aerated Drinks", price: 65, category: "Beverages", description: "Cola / Sprite / Fanta." },
   { id: 844, name: "Diet Coke", price: 95, category: "Beverages", description: "Zero sugar cola." },
   { id: 845, name: "Ginger Ale", price: 105, category: "Beverages", description: "Crisp ginger beverage." },
   { id: 846, name: "Tonic Water", price: 115, category: "Beverages", description: "Schweppes tonic." },
@@ -457,6 +427,7 @@ function OrderContent() {
   const [tableOrders, setTableOrders] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
+  const [showMobileCartModal, setShowMobileCartModal] = useState(false);
 
   useEffect(() => {
     const fetchTableOrders = async () => {
@@ -508,6 +479,8 @@ function OrderContent() {
     }, 0);
   };
 
+  const totalItemCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+
   const handlePlaceOrder = async () => {
     const itemsArray = Object.entries(cart).map(([id, qty]) => {
       const item = MASTER_PUB_MENU.find((m) => m.id === Number(id));
@@ -541,6 +514,7 @@ function OrderContent() {
     } else {
       setCart({});
       setOrderSuccess(true);
+      setShowMobileCartModal(false);
       setActiveTab("status");
       setTimeout(() => setOrderSuccess(false), 4000);
     }
@@ -565,7 +539,7 @@ function OrderContent() {
   const cumulativeBill = tableOrders.reduce((sum, order) => sum + (order.total || 0), 0);
 
   return (
-    <main className="bg-[#06080C] text-[#F4F0EA] min-h-screen font-sans pb-24">
+    <main className="bg-[#06080C] text-[#F4F0EA] min-h-screen font-sans pb-32">
       
       {/* RESPONSIVE HEADER */}
       <nav className="sticky top-0 z-50 bg-[#06080C]/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-6 py-4">
@@ -730,7 +704,8 @@ function OrderContent() {
               )}
             </div>
 
-            <div className="lg:sticky lg:top-36">
+            {/* DESKTOP CART SIDEBAR */}
+            <div className="hidden lg:block lg:sticky lg:top-36">
               <div className="bg-[#12100E] border border-white/10 rounded-2xl p-6 shadow-2xl">
                 <h3 className="font-serif text-xl text-white mb-4 border-b border-white/10 pb-3">Current Cart</h3>
 
@@ -833,6 +808,68 @@ function OrderContent() {
 
         )}
       </div>
+
+      {/* MOBILE STICKY BOTTOM CART BAR */}
+      {activeTab === "menu" && totalItemCount > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-[#12100E]/95 backdrop-blur-xl border-t border-white/15 px-5 py-3.5 lg:hidden z-50 flex justify-between items-center shadow-2xl">
+          <div>
+            <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-semibold block">{totalItemCount} Items in Cart</span>
+            <span className="font-serif text-xl text-white">₹{calculateCartTotal()}</span>
+          </div>
+          <button
+            onClick={() => setShowMobileCartModal(true)}
+            className="bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg cursor-pointer"
+          >
+            View Cart & Checkout →
+          </button>
+        </div>
+      )}
+
+      {/* MOBILE CART & CHECKOUT MODAL */}
+      {showMobileCartModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col justify-end lg:hidden">
+          <div className="bg-[#12100E] border-t border-white/15 rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto shadow-2xl">
+            <div className="flex justify-between items-center mb-4 border-b border-white/10 pb-3">
+              <h3 className="font-serif text-xl text-white">Your Current Cart</h3>
+              <button 
+                onClick={() => setShowMobileCartModal(false)}
+                className="text-gray-400 hover:text-white text-lg font-bold p-2"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-3 max-h-56 overflow-y-auto pr-1 mb-4">
+              {Object.entries(cart).map(([id, qty]) => {
+                const item = MASTER_PUB_MENU.find((m) => m.id === Number(id));
+                return (
+                  <div key={id} className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
+                    <div>
+                      <span className="text-white block font-medium">{item?.name}</span>
+                      <span className="text-xs text-gray-500">Qty: {qty}</span>
+                    </div>
+                    <span className="text-[#D4AF37] font-semibold">₹{(item?.price || 0) * Number(qty)}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="border-t border-white/10 pt-4 flex justify-between items-center text-base font-bold mb-6">
+              <span className="text-gray-300">Total Amount</span>
+              <span className="font-serif text-2xl text-[#D4AF37]">₹{calculateCartTotal()}</span>
+            </div>
+
+            <button
+              onClick={handlePlaceOrder}
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black py-4 rounded-xl text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-all cursor-pointer shadow-lg disabled:opacity-50"
+            >
+              {isSubmitting ? "Placing Order..." : "Place Order to Kitchen / Bar"}
+            </button>
+          </div>
+        </div>
+      )}
+
     </main>
   );
 }
