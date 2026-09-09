@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
@@ -48,20 +50,15 @@ const MENU_CATEGORIES = [
 ];
 
 const MASTER_PUB_MENU = [
-  // SOUPS
   { id: 101, name: "Cream Of Spinach Soup", price: 220, category: "Soups", description: "Rich and creamy classic spinach soup.", is_available: true },
   { id: 102, name: "Cream Of Tomato Soup", price: 220, category: "Soups", description: "Velvety smooth garden tomato soup.", is_available: true },
   { id: 103, name: "Manchow Soup Veg / Chicken", price: 240, category: "Soups", description: "Spicy dark soy broth topped with crispy noodles.", is_available: true },
   { id: 104, name: "Hot And Sour Soup Veg / Chicken", price: 240, category: "Soups", description: "Classic hot and tangy Sichuan style soup.", is_available: true },
   { id: 105, name: "Sweet Corn Soup Veg / Chicken", price: 240, category: "Soups", description: "Comforting sweet corn broth with tender kernels.", is_available: true },
-
-  // SALADS
   { id: 110, name: "Green Salad / Cucumber Salad", price: 170, category: "Salads", description: "Fresh crisp garden vegetables and sliced cucumbers.", is_available: true },
   { id: 111, name: "Caesar Salad (Veg / Chicken)", price: 345, category: "Salads", description: "Romaine lettuce, parmesan, croutons, and classic dressing.", is_available: true },
   { id: 112, name: "Grilled Chicken Salad", price: 345, category: "Salads", description: "Juicy sliced grilled chicken over fresh greens.", is_available: true },
   { id: 113, name: "Watermelon Feta Salad", price: 335, category: "Salads", description: "Refreshing cubed watermelon with crumbled feta and mint.", is_available: true },
-
-  // BAR BITES
   { id: 120, name: "Sandige / Papad", price: 130, category: "Bar Bites", description: "Traditional crispy accompaniment.", is_available: true },
   { id: 121, name: "Masala Papad", price: 160, category: "Bar Bites", description: "Crispy papad topped with spicy onion-tomato masala.", is_available: true },
   { id: 122, name: "Peanut Masala", price: 180, category: "Bar Bites", description: "Crunchy peanuts tossed with onions, tomatoes, and spices.", is_available: true },
@@ -75,8 +72,6 @@ const MASTER_PUB_MENU = [
   { id: 130, name: "Mexican Grilled Chicken Nachos", price: 350, category: "Bar Bites", description: "Loaded nachos topped with spiced grilled chicken.", is_available: true },
   { id: 131, name: "Crispy Onion Rings", price: 250, category: "Bar Bites", description: "Golden battered onion rings with dip.", is_available: true },
   { id: 132, name: "Potato Basket", price: 335, category: "Bar Bites", description: "Assorted potato fries and wedges.", is_available: true },
-
-  // TANDOOR
   { id: 140, name: "Veg Seekh Kabab", price: 315, category: "Tandoor", description: "Minced vegetable skewers grilled in clay oven.", is_available: true },
   { id: 141, name: "Tandoori Malai Broccoli", price: 345, category: "Tandoor", description: "Creamy marinated broccoli florets charred to perfection.", is_available: true },
   { id: 142, name: "Malai Paneer Tikka", price: 380, category: "Tandoor", description: "Melt-in-mouth cottage cheese in rich cream marinade.", is_available: true },
@@ -92,8 +87,6 @@ const MASTER_PUB_MENU = [
   { id: 152, name: "Tandoori Chicken (Half / Full)", price: 800, category: "Tandoor", description: "The ultimate classic bone-in tandoori chicken.", is_available: true },
   { id: 153, name: "Tandoori Prawns", price: 550, category: "Tandoor", description: "Jumbo prawns grilled with tandoori spices.", is_available: true },
   { id: 154, name: "Tandoori Pomfret", price: 750, category: "Tandoor", description: "Whole pomfret marinated and roasted.", is_available: true },
-
-  // RAAHI FAVOURITES
   { id: 160, name: "Cheesy Veg Fingers", price: 295, category: "Raahi Favourites", description: "Crispy breaded fingers packed with molten cheese.", is_available: true },
   { id: 161, name: "Mushroom Kodiyala", price: 355, category: "Raahi Favourites", description: "Signature Mangalorean style spiced mushrooms.", is_available: true },
   { id: 162, name: "Mongolian Paneer", price: 360, category: "Raahi Favourites", description: "Tossed in spicy sweet Mongolian glaze.", is_available: true },
@@ -108,8 +101,6 @@ const MASTER_PUB_MENU = [
   { id: 171, name: "Mutton Nalli", price: 660, category: "Raahi Favourites", description: "Slow-cooked succulent mutton bone marrow preparation.", is_available: true },
   { id: 172, name: "Egg Burji Pav", price: 290, category: "Raahi Favourites", description: "Spicy scrambled eggs served with buttered pav.", is_available: true },
   { id: 173, name: "Mutton Keema Pav", price: 410, category: "Raahi Favourites", description: "Rich spiced minced lamb served with toasted pav.", is_available: true },
-
-  // CLASSICS & RAAHI CLASSICS
   { id: 180, name: "Gobi Manchurian", price: 310, category: "Classics & Raahi Classics", description: "Crispy cauliflower florets in tangy soy-garlic sauce.", is_available: true },
   { id: 181, name: "Gobi Chilli", price: 310, category: "Classics & Raahi Classics", description: "Spicy tossed cauliflower with peppers and chilies.", is_available: true },
   { id: 182, name: "Egg Manchurian", price: 310, category: "Classics & Raahi Classics", description: "Crispy fried boiled egg quarters in manchurian sauce.", is_available: true },
@@ -155,8 +146,6 @@ const MASTER_PUB_MENU = [
   { id: 222, name: "Prawns Koliwada", price: 490, category: "Classics & Raahi Classics", description: "Crispy batter-fried spicy prawns.", is_available: true },
   { id: 223, name: "Golden Fried Prawns", price: 490, category: "Classics & Raahi Classics", description: "Panko-crusted crispy prawns.", is_available: true },
   { id: 224, name: "Mutton Pepper Dry", price: 490, category: "Classics & Raahi Classics", description: "Tender mutton dry roasted with black pepper.", is_available: true },
-
-  // COASTAL SPECIALS
   { id: 230, name: "Neer Dosa", price: 95, category: "Coastal Specials", description: "Lacey delicate soft rice crepes.", is_available: true },
   { id: 231, name: "Paneer / Mushroom Ghee Roast", price: 345, category: "Coastal Specials", description: "Rich spice and ghee tossed paneer or mushrooms.", is_available: true },
   { id: 232, name: "Egg Masala Fry", price: 310, category: "Coastal Specials", description: "Spiced masala coated fried eggs.", is_available: true },
@@ -166,8 +155,6 @@ const MASTER_PUB_MENU = [
   { id: 236, name: "Prawns (Tawa / Rava / Masala Fry)", price: 450, category: "Coastal Specials", description: "Fresh prawns with coastal seasoning.", is_available: true },
   { id: 237, name: "Anjal (Tawa / Rava / Masala Fry)", price: 550, category: "Coastal Specials", description: "Kingfish steak cooked to perfection.", is_available: true },
   { id: 238, name: "Pomfret (Tawa / Rava / Masala Fry)", price: 650, category: "Coastal Specials", description: "Whole pomfret fried with coastal spices.", is_available: true },
-
-  // CHEFS SPECIAL
   { id: 240, name: "Curry Leaf Mushroom", price: 345, category: "Chefs Special", description: "Mushrooms tossed in fragrant fresh curry leaf paste.", is_available: true },
   { id: 241, name: "Dragon Baby Corn", price: 345, category: "Chefs Special", description: "Spicy sweet dragon baby corn.", is_available: true },
   { id: 242, name: "Cheese Corn Ball", price: 400, category: "Chefs Special", description: "Crispy cheesy golden corn spheres.", is_available: true },
@@ -177,20 +164,14 @@ const MASTER_PUB_MENU = [
   { id: 246, name: "Crispy Spinach Chicken", price: 380, category: "Chefs Special", description: "Chicken tossed with crisp seasoned spinach leaves.", is_available: true },
   { id: 247, name: "Chicken Lollipop", price: 380, category: "Chefs Special", description: "Classic spicy drummettes.", is_available: true },
   { id: 248, name: "Chicken Lollipop Special", price: 390, category: "Chefs Special", description: "Chef special coated chicken lollipops.", is_available: true },
-
-  // SHARED PLATES
   { id: 250, name: "Tandoori Veg Platter", price: 500, category: "Shared Plates", description: "Assorted tandoori paneer, vegetables, and kebabs.", is_available: true },
   { id: 251, name: "Tandoori Chicken Platter", price: 800, category: "Shared Plates", description: "Assorted tandoori chicken varieties.", is_available: true },
   { id: 252, name: "Mixed Non Veg Platter", price: 1155, category: "Shared Plates", description: "Ultimate platter of chicken, mutton, and fish kebabs.", is_available: true },
   { id: 253, name: "Seafood Platter", price: 1250, category: "Shared Plates", description: "Selection of coastal fish and prawns.", is_available: true },
-
-  // NAATI SPECIALS
   { id: 260, name: "Chicken Green Chutney Masala", price: 380, category: "Naati Specials", description: "Country style chicken cooked in green herb paste.", is_available: true },
   { id: 261, name: "Chicken Cashew Pepper", price: 380, category: "Naati Specials", description: "Naati style chicken with roasted cashews and pepper.", is_available: true },
   { id: 262, name: "Naati Style Chicken Donne Biryani", price: 390, category: "Naati Specials", description: "Authentic short-grain fragrant donne biryani with country chicken.", is_available: true },
   { id: 263, name: "Naati Style Mutton Donne Biryani", price: 490, category: "Naati Specials", description: "Traditional flavorful tender mutton donne biryani.", is_available: true },
-
-  // NEW SPECIALS
   { id: 270, name: "Grilled Stuffed Mushrooms", price: 360, category: "New Specials", description: "Char-grilled mushrooms stuffed with herbs and cheese.", is_available: true },
   { id: 271, name: "Beer-Battered Fish Nuggets", price: 390, category: "New Specials", description: "Crisp beer-battered fish bites with dip.", is_available: true },
   { id: 272, name: "Prawn Popcorn", price: 330, category: "New Specials", description: "Bite-sized crispy fried popcorn prawns.", is_available: true },
@@ -198,15 +179,11 @@ const MASTER_PUB_MENU = [
   { id: 274, name: "Chilli Crispy Lotus Stem", price: 330, category: "New Specials", description: "Honey chili glazed crispy lotus stems.", is_available: true },
   { id: 275, name: "Thai Green Tikka Bites", price: 380, category: "New Specials", description: "Fusion chicken tikka infused with Thai green curry flavors.", is_available: true },
   { id: 276, name: "Bangalore Fried Chicken", price: 350, category: "New Specials", description: "Local style spicy street-style fried chicken.", is_available: true },
-
-  // PASTA
   { id: 280, name: "Alfredo Pasta (Veg / Chicken)", price: 420, category: "Pasta", description: "Rich and creamy parmesan white sauce pasta.", is_available: true },
   { id: 281, name: "Arrabbiata Pasta (Veg / Chicken)", price: 420, category: "Pasta", description: "Spicy garlic tomato herb sauce.", is_available: true },
   { id: 282, name: "Parma Rosa Sauce Pasta (Veg / Chicken)", price: 420, category: "Pasta", description: "Blended creamy tomato and white sauce.", is_available: true },
   { id: 283, name: "Pesto Pasta (Veg / Chicken)", price: 420, category: "Pasta", description: "Fresh basil, garlic, pine nut, and parmesan pesto.", is_available: true },
   { id: 284, name: "Aglio e Olio (Veg / Chicken)", price: 420, category: "Pasta", description: "Olive oil, garlic, chili flakes, and parsley.", is_available: true },
-
-  // PIZZA
   { id: 290, name: "Classic Margherita Pizza", price: 380, category: "Pizza", description: "Mozzarella, fresh basil, and tomato sauce.", is_available: true },
   { id: 291, name: "Exotic Veg Farmer Pizza", price: 400, category: "Pizza", description: "Loaded with bell peppers, olives, corn, and mushrooms.", is_available: true },
   { id: 292, name: "Paneer Tikka Pizza", price: 400, category: "Pizza", description: "Tandoori paneer chunks, onions, and capsicum.", is_available: true },
@@ -215,14 +192,10 @@ const MASTER_PUB_MENU = [
   { id: 295, name: "Peri Peri Chicken Pizza", price: 450, category: "Pizza", description: "Spicy peri peri chicken toppings.", is_available: true },
   { id: 296, name: "BBQ Chicken Pizza", price: 450, category: "Pizza", description: "Barbecue chicken, onions, and smoked cheese.", is_available: true },
   { id: 297, name: "Raahi's Loaded Meat Pizza", price: 470, category: "Pizza", description: "Loaded with chicken, mutton chunks, and sausage.", is_available: true },
-
-  // CONTINENTAL
   { id: 300, name: "Veg Stroganoff", price: 360, category: "Continental", description: "Sautéed vegetables in creamy mushroom paprika sauce with rice.", is_available: true },
   { id: 301, name: "Pasta Ravioli in Pesto Sauce", price: 360, category: "Continental", description: "Filled ravioli pasta tossed in rich basil pesto.", is_available: true },
   { id: 302, name: "Grilled Chicken Steak", price: 400, category: "Continental", description: "Juicy chicken breast served with mash and pepper sauce.", is_available: true },
   { id: 303, name: "Grilled Chicken with Red Wine Mushroom Sauce", price: 400, category: "Continental", description: "Tender grilled chicken in rich red wine mushroom reduction.", is_available: true },
-
-  // CHINESE
   { id: 310, name: "Nasi Goreng", price: 395, category: "Chinese", description: "Indonesian fried rice served with satay and fried egg.", is_available: true },
   { id: 311, name: "Thai Green Curry (Veg / Chicken / Prawn)", price: 430, category: "Chinese", description: "Fragrant coconut green curry with steamed rice.", is_available: true },
   { id: 312, name: "Thai Red Curry (Veg / Chicken / Prawn)", price: 430, category: "Chinese", description: "Spicy coconut red curry with steamed rice.", is_available: true },
@@ -231,8 +204,6 @@ const MASTER_PUB_MENU = [
   { id: 315, name: "Fried Rice (Veg / Egg / Chicken / Prawn)", price: 345, category: "Chinese", description: "Classic wok-tossed fried rice.", is_available: true },
   { id: 316, name: "Hakka Noodles (Veg / Egg / Chicken / Prawn)", price: 315, category: "Chinese", description: "Wok-tossed noodles with crunchy vegetables.", is_available: true },
   { id: 317, name: "Schezwan Fried Rice (Veg / Egg / Chicken / Prawn)", price: 355, category: "Chinese", description: "Spicy Schezwan wok-tossed rice.", is_available: true },
-
-  // INDIAN CURRIES
   { id: 330, name: "Dal Fry", price: 210, category: "Indian Curries", description: "Yellow lentils tempered with garlic and cumin.", is_available: true },
   { id: 331, name: "Dal Makhani", price: 280, category: "Indian Curries", description: "Overnight simmered creamy black lentils.", is_available: true },
   { id: 332, name: "Tomato Kaju Masala", price: 295, category: "Indian Curries", description: "Cashews simmered in rich tomato gravy.", is_available: true },
@@ -249,8 +220,6 @@ const MASTER_PUB_MENU = [
   { id: 343, name: "Chicken Kadai", price: 390, category: "Indian Curries", description: "Wok-cooked chicken with bell peppers and whole spices.", is_available: true },
   { id: 344, name: "Ginger Chicken", price: 390, category: "Indian Curries", description: "Chicken gravy flavored with fresh julienned ginger.", is_available: true },
   { id: 345, name: "Mutton Rogan Josh", price: 520, category: "Indian Curries", description: "Kashmiri slow-braised tender lamb curry.", is_available: true },
-
-  // SANDWICHES & BURGERS
   { id: 360, name: "American Cheese Corn Sandwich", price: 310, category: "Sandwiches & Burgers", description: "Loaded with sweet corn and melted cheese.", is_available: true },
   { id: 361, name: "Veg Club Sandwich", price: 320, category: "Sandwiches & Burgers", description: "Triple-decker vegetable and cheese sandwich.", is_available: true },
   { id: 362, name: "Chicken Club Sandwich", price: 370, category: "Sandwiches & Burgers", description: "Triple-decker chicken, egg, and lettuce club.", is_available: true },
@@ -258,8 +227,6 @@ const MASTER_PUB_MENU = [
   { id: 364, name: "Turkish Style Lamb Sliders", price: 490, category: "Sandwiches & Burgers", description: "Spiced minced lamb mini burgers.", is_available: true },
   { id: 365, name: "Farm Cheese Slider", price: 380, category: "Sandwiches & Burgers", description: "Crispy cheese patty sliders.", is_available: true },
   { id: 366, name: "Pulled Chicken Slider", price: 380, category: "Sandwiches & Burgers", description: "Slow-cooked BBQ pulled chicken mini burgers.", is_available: true },
-
-  // RICE & BREADS
   { id: 380, name: "Phulka", price: 65, category: "Rice & Breads", description: "Soft puffed wheat bread.", is_available: true },
   { id: 381, name: "Roti / Butter Roti", price: 75, category: "Rice & Breads", description: "Whole wheat tandoori roti.", is_available: true },
   { id: 382, name: "Kulcha / Butter Kulcha", price: 95, category: "Rice & Breads", description: "Soft leavened bread.", is_available: true },
@@ -273,16 +240,12 @@ const MASTER_PUB_MENU = [
   { id: 390, name: "Chicken Biryani", price: 390, category: "Rice & Breads", description: "Slow-cooked dum chicken biryani.", is_available: true },
   { id: 391, name: "Mutton Biryani", price: 490, category: "Rice & Breads", description: "Tender lamb layered aromatic biryani.", is_available: true },
   { id: 392, name: "Naan / Butter Naan / Butter Garlic Naan / Cheese Garlic Naan", price: 115, category: "Rice & Breads", description: "Choice of tandoori naan.", is_available: true },
-
-  // DESSERTS
   { id: 410, name: "Chocolate & Walnut Brownie", price: 145, category: "Desserts", description: "Fudgy brownie packed with crunchy walnuts.", is_available: true },
   { id: 411, name: "New York Baked Cheesecake", price: 260, category: "Desserts", description: "Rich and creamy baked vanilla cheesecake.", is_available: true },
   { id: 412, name: "Chocolate Walnut Brownie With Ice Cream", price: 195, category: "Desserts", description: "Served warm with a scoop of vanilla ice cream.", is_available: true },
   { id: 413, name: "Gulab Jamun With Ice Cream", price: 195, category: "Desserts", description: "Warm dumplings with vanilla ice cream.", is_available: true },
   { id: 414, name: "Blueberry / Strawberry Cheesecake", price: 260, category: "Desserts", description: "Baked cheesecake topped with fruit compote.", is_available: true },
   { id: 415, name: "Gulab Jamun (2 pcs)", price: 145, category: "Desserts", description: "Classic syrupy milk-solid dumplings.", is_available: true },
-
-  // DRAUGHT BEER
   { id: 500, name: "Kingfisher Premium (Draught)", price: 830, category: "Draught Beer", description: "Tap / Pint / Pitcher options available.", is_available: true },
   { id: 501, name: "Kingfisher Ultra (Draught)", price: 1010, category: "Draught Beer", description: "Smooth premium draft beer.", is_available: true },
   { id: 502, name: "Budweiser Premium (Draught)", price: 1040, category: "Draught Beer", description: "Crisp American style lager on tap.", is_available: true },
@@ -290,8 +253,6 @@ const MASTER_PUB_MENU = [
   { id: 504, name: "Hoegaarden (Draught)", price: 1420, category: "Draught Beer", description: "Belgian white wheat beer on tap.", is_available: true },
   { id: 505, name: "Toit Tint-In-Wit (Draught)", price: 1040, category: "Draught Beer", description: "Craft witbier on tap.", is_available: true },
   { id: 506, name: "Toit Hefeweizen (Draught)", price: 1040, category: "Draught Beer", description: "German style wheat craft beer.", is_available: true },
-
-  // BOTTLED BEER
   { id: 510, name: "Kingfisher Premium (Bottle)", price: 230, category: "Bottled Beer", description: "330ml bottle.", is_available: true },
   { id: 511, name: "Kingfisher Ultra (Bottle)", price: 275, category: "Bottled Beer", description: "330ml bottle.", is_available: true },
   { id: 512, name: "Amstel Grande (Bottle)", price: 250, category: "Bottled Beer", description: "330ml bottle.", is_available: true },
@@ -304,8 +265,6 @@ const MASTER_PUB_MENU = [
   { id: 519, name: "Hoegaarden Rosee (Bottle)", price: 330, category: "Bottled Beer", description: "330ml bottle.", is_available: true },
   { id: 520, name: "Hoegaarden Nectarine (Bottle)", price: 330, category: "Bottled Beer", description: "330ml bottle.", is_available: true },
   { id: 521, name: "Corona (Bottle)", price: 390, category: "Bottled Beer", description: "330ml bottle with lime.", is_available: true },
-
-  // CLASSIC COCKTAILS
   { id: 530, name: "Picante de la Casa", price: 685, category: "Classic Cocktails", description: "Tequila, Coriander, Red Chilli, Sweet & Sour Mix.", is_available: true },
   { id: 531, name: "Paloma", price: 685, category: "Classic Cocktails", description: "Tequila, Grapefruit, Sea salt, Sweet & Sour Mix.", is_available: true },
   { id: 532, name: "Cosmopolitan", price: 620, category: "Classic Cocktails", description: "Vodka, Cranberry Juice, Lime Juice, Triple Sec.", is_available: true },
@@ -322,8 +281,6 @@ const MASTER_PUB_MENU = [
   { id: 543, name: "Daiquiri", price: 515, category: "Classic Cocktails", description: "White Rum, Sweet & Sour Mix.", is_available: true },
   { id: 544, name: "Red / White Sangria", price: 410, category: "Classic Cocktails", description: "Wine based fruit pitcher.", is_available: true },
   { id: 545, name: "Long Island Ice Tea", price: 630, category: "Classic Cocktails", description: "Classic multi-spirit powerhouse cocktail.", is_available: true },
-
-  // SIGNATURE COCKTAILS
   { id: 550, name: "Raahi G&T", price: 620, category: "Signature Cocktails", description: "Gin, Star Anise, Cloves, Cinnamon, Cardamom, Fresh Cucumber, Elderflower Syrup, Lime Juice, Tonic Water.", is_available: true },
   { id: 551, name: "Citrus Dream", price: 620, category: "Signature Cocktails", description: "Gin, Triple Sec, Sweet & Sour, Fresh Grapefruit Juice.", is_available: true },
   { id: 552, name: "Berry Basil Smash", price: 580, category: "Signature Cocktails", description: "Scotch, Sour Mix, Mixed Berry Syrup, Basil Leaves, Vegan Foam.", is_available: true },
@@ -338,22 +295,16 @@ const MASTER_PUB_MENU = [
   { id: 561, name: "Pineapple Rummy", price: 490, category: "Signature Cocktails", description: "White Rum, Fresh Pineapple, Curry Leaves, Lime Juice, Spiced Pineapple Cubes.", is_available: true },
   { id: 562, name: "Velvet Sunset", price: 580, category: "Signature Cocktails", description: "Gin, Red Wine Reduction, Fresh Watermelon, Sour Mix.", is_available: true },
   { id: 563, name: "Scarlet Bloom", price: 620, category: "Signature Cocktails", description: "Tequila, Cranberry Rosemary Reduction, Sour Mix.", is_available: true },
-
-  // SIGNATURE LIIT
   { id: 570, name: "Bokka Vishesha!", price: 729, category: "Signature LIIT", description: "Vodka, Gin, White Rum, Tequila, Kokum Syrup, Coconut Water.", is_available: true },
   { id: 571, name: "Smashed & How", price: 729, category: "Signature LIIT", description: "Vodka, Gin, White Rum, Tequila, Raspberry, Basil, Soda.", is_available: true },
   { id: 572, name: "With Love, Raahi!", price: 729, category: "Signature LIIT", description: "Vodka, Gin, White Rum, Tequila, Butterfly Pea Tea, Sprite.", is_available: true },
   { id: 573, name: "High! How Are You?", price: 729, category: "Signature LIIT", description: "Vodka, Gin, White Rum, Tequila, Chamomile, Sprite.", is_available: true },
-
-  // SIGNATURE SANGRIAS
   { id: 580, name: "Candied Apple Sangria", price: 419, category: "Signature Sangrias", description: "White Wine, Green Apple, Caramel, Vodka, Soda.", is_available: true },
   { id: 581, name: "Peachy Pom Sangria", price: 419, category: "Signature Sangrias", description: "White Wine, Peach, Lime, Apple, Vodka, Soda.", is_available: true },
   { id: 582, name: "Citrus Wave Sangria", price: 419, category: "Signature Sangrias", description: "White Wine, Triple Sec, Orange, Lime, Orange, Vodka, Soda.", is_available: true },
   { id: 583, name: "Berry Breeze Sangria", price: 419, category: "Signature Sangrias", description: "White Wine, Strawberry, Lime, Vodka, Soda.", is_available: true },
   { id: 584, name: "Crimson Spice Sangria", price: 419, category: "Signature Sangrias", description: "Red Wine, Passion Fruit, Apple, Orange, Lime, Brandy, Indian Spices, Soda.", is_available: true },
   { id: 585, name: "Rustic Plum Sangria", price: 419, category: "Signature Sangrias", description: "Red Wine, Plum, Thyme, Lime, Brandy.", is_available: true },
-
-  // MOCKTAILS
   { id: 590, name: "Peach Bull", price: 250, category: "Mocktails", description: "Peach & Strawberry Syrup, Lemonade, Red Bull.", is_available: true },
   { id: 591, name: "Paris Summer", price: 250, category: "Mocktails", description: "Grape Juice, Lavender Cordial, Berry & Tea Soda.", is_available: true },
   { id: 592, name: "Cream Scotch Soda", price: 250, category: "Mocktails", description: "Butterscotch Cream, topped with soda.", is_available: true },
@@ -365,8 +316,6 @@ const MASTER_PUB_MENU = [
   { id: 598, name: "Virgin Mojito", price: 250, category: "Mocktails", description: "Mint, Lime, Sugar, Sprite.", is_available: true },
   { id: 599, name: "Virgin Piña Colada", price: 250, category: "Mocktails", description: "Pineapple, Coconut, Fresh Cream.", is_available: true },
   { id: 600, name: "Virgin Guava Mary", price: 250, category: "Mocktails", description: "Spiced guava juice blend.", is_available: true },
-
-  // SHOOTERS
   { id: 610, name: "Jägermeister Ice Cold", price: 475, category: "Shooters", description: "Chilled herbal shot.", is_available: true },
   { id: 611, name: "Bailey's Irish Cream", price: 420, category: "Shooters", description: "Smooth creamy liqueur shot.", is_available: true },
   { id: 612, name: "Xenta Absenta", price: 650, category: "Shooters", description: "Strong absinthe shot.", is_available: true },
@@ -380,16 +329,12 @@ const MASTER_PUB_MENU = [
   { id: 620, name: "Jäger Beer Boom", price: 580, category: "Shooters", description: "Jager drop in beer.", is_available: true },
   { id: 621, name: "Jäger Energy", price: 580, category: "Shooters", description: "Jägermeister with Red Bull.", is_available: true },
   { id: 622, name: "Flaming Lamborghini Tower", price: 1299, category: "Shooters", description: "Multi-tiered flaming shot tower.", is_available: true },
-
-  // VODKA
   { id: 630, name: "Smirnoff", price: 195, category: "Vodka", description: "Classic clean vodka shot.", is_available: true },
   { id: 631, name: "Smirnoff Minty Jamun / Mango Mirchi / Zesty Lime", price: 195, category: "Vodka", description: "Flavored Smirnoff variants.", is_available: true },
   { id: 632, name: "Ketel One", price: 275, category: "Vodka", description: "Dutch crafted premium vodka.", is_available: true },
   { id: 633, name: "Absolut & Flavours", price: 295, category: "Vodka", description: "Swedish premium vodka.", is_available: true },
   { id: 634, name: "Ciroc", price: 400, category: "Vodka", description: "French grape-distilled luxury vodka.", is_available: true },
   { id: 635, name: "Grey Goose", price: 430, category: "Vodka", description: "Ultra-premium French wheat vodka.", is_available: true },
-
-  // GIN
   { id: 640, name: "Greater Than Gin", price: 170, category: "Gin", description: "Indian craft gin.", is_available: true },
   { id: 641, name: "Bombay Sapphire", price: 275, category: "Gin", description: "London dry premium gin.", is_available: true },
   { id: 642, name: "Tanqueray Gin", price: 295, category: "Gin", description: "Classic London dry.", is_available: true },
@@ -399,20 +344,14 @@ const MASTER_PUB_MENU = [
   { id: 646, name: "Roku", price: 515, category: "Gin", description: "Japanese botanical craft gin.", is_available: true },
   { id: 647, name: "Tanqueray No. 10", price: 525, category: "Gin", description: "Small-batch ultra premium gin.", is_available: true },
   { id: 648, name: "Monkey 47", price: 620, category: "Gin", description: "Black Forest German dry gin.", is_available: true },
-
-  // RUM
   { id: 650, name: "Old Monk", price: 125, category: "Rum", description: "Legendary Indian dark rum.", is_available: true },
   { id: 651, name: "Bacardi White", price: 195, category: "Rum", description: "Light Puerto Rican rum.", is_available: true },
   { id: 652, name: "Bacardi Flavours", price: 195, category: "Rum", description: "Flavored white rum.", is_available: true },
   { id: 653, name: "Amrut Two Indies", price: 195, category: "Rum", description: "Craft rum from Amrut.", is_available: true },
-
-  // BRANDY
   { id: 660, name: "Mansion House", price: 150, category: "Brandy", description: "Classic French-style brandy.", is_available: true },
   { id: 661, name: "Morpheus", price: 220, category: "Brandy", description: "Premium blended brandy.", is_available: true },
   { id: 662, name: "Hennessy VS", price: 590, category: "Brandy", description: "Cognac Very Special.", is_available: true },
   { id: 663, name: "Hennessy VSOP", price: 895, category: "Brandy", description: "Cognac Very Superior Old Pale.", is_available: true },
-
-  // TEQUILA
   { id: 670, name: "Don Angel Silver", price: 305, category: "Tequila", description: "Classic tequila shot.", is_available: true },
   { id: 671, name: "Camino Gold / Silver", price: 305, category: "Tequila", description: "Traditional Mexican tequila.", is_available: true },
   { id: 672, name: "Maya Pistola Joven", price: 305, category: "Tequila", description: "Indian craft agave spirit.", is_available: true },
@@ -422,8 +361,6 @@ const MASTER_PUB_MENU = [
   { id: 676, name: "Patron Silver", price: 620, category: "Tequila", description: "Ultra-premium tequila.", is_available: true },
   { id: 677, name: "Patron Reposado", price: 685, category: "Tequila", description: "Aged ultra-premium tequila.", is_available: true },
   { id: 678, name: "Don Julio Reposado", price: 695, category: "Tequila", description: "Aged blue agave luxury tequila.", is_available: true },
-
-  // IRISH / BOURBON / TENNESSEE
   { id: 690, name: "Jim Beam", price: 265, category: "Irish / Bourbon / Tennessee", description: "Kentucky straight bourbon.", is_available: true },
   { id: 691, name: "Jameson Irish", price: 305, category: "Irish / Bourbon / Tennessee", description: "Smooth triple-distilled Irish whiskey.", is_available: true },
   { id: 692, name: "Jack Daniel's", price: 370, category: "Irish / Bourbon / Tennessee", description: "Tennessee whiskey.", is_available: true },
@@ -432,8 +369,6 @@ const MASTER_PUB_MENU = [
   { id: 695, name: "Maker's Mark", price: 475, category: "Irish / Bourbon / Tennessee", description: "Handcrafted bourbon whisky.", is_available: true },
   { id: 696, name: "Woodford Reserve", price: 515, category: "Irish / Bourbon / Tennessee", description: "Kentucky straight bourbon.", is_available: true },
   { id: 697, name: "Jack Daniel's Single Barrel", price: 620, category: "Irish / Bourbon / Tennessee", description: "Single barrel select Tennessee whiskey.", is_available: true },
-
-  // BLENDED SCOTCH
   { id: 700, name: "Johnnie Walker Blonde", price: 225, category: "Blended Scotch", description: "Light and fruity scotch blend.", is_available: true },
   { id: 701, name: "Royal Ranthambore", price: 225, category: "Blended Scotch", description: "Royal Indian blended whisky.", is_available: true },
   { id: 702, name: "Dewar's White Label", price: 225, category: "Blended Scotch", description: "Double-aged blended Scotch.", is_available: true },
@@ -454,8 +389,6 @@ const MASTER_PUB_MENU = [
   { id: 717, name: "Ballantine's 12 yrs", price: 410, category: "Blended Scotch", description: "Aged 12 years.", is_available: true },
   { id: 718, name: "Monkey Shoulder", price: 475, category: "Blended Scotch", description: "100% malt whisky blend.", is_available: true },
   { id: 719, name: "Dewar's 18 yrs", price: 685, category: "Blended Scotch", description: "Ultra-aged blended Scotch.", is_available: true },
-
-  // SINGLE MALT WHISKEY
   { id: 730, name: "Amrut Fusion", price: 305, category: "Single Malt Whiskey", description: "Award-winning Indian single malt.", is_available: true },
   { id: 731, name: "The Glenlivet Caribbean Reserve", price: 410, category: "Single Malt Whiskey", description: "Rum barrel finish single malt.", is_available: true },
   { id: 732, name: "Godawan 01 Rich & Round", price: 410, category: "Single Malt Whiskey", description: "Artisanal Rajasthani single malt.", is_available: true },
@@ -476,8 +409,6 @@ const MASTER_PUB_MENU = [
   { id: 747, name: "Lagavulin 16 yrs", price: 790, category: "Single Malt Whiskey", description: "Intense smoky Islay single malt.", is_available: true },
   { id: 748, name: "Hibiki", price: 990, category: "Single Malt Whiskey", description: "Legendary Japanese harmony whisky.", is_available: true },
   { id: 749, name: "Yamazaki", price: 990, category: "Single Malt Whiskey", description: "Japanese single malt whisky.", is_available: true },
-
-  // PREMIUM SCOTCH
   { id: 760, name: "Chivas Regal 12 yrs", price: 395, category: "Premium Scotch", description: "Blended Scotch whisky.", is_available: true },
   { id: 761, name: "Johnnie Walker Black Label", price: 420, category: "Premium Scotch", description: "Iconic aged blended Scotch.", is_available: true },
   { id: 762, name: "Johnnie Walker Double Black", price: 475, category: "Premium Scotch", description: "Intense smoky blend.", is_available: true },
@@ -486,8 +417,6 @@ const MASTER_PUB_MENU = [
   { id: 765, name: "Chivas Regal 18 yrs", price: 660, category: "Premium Scotch", description: "Exceptionally rich aged scotch.", is_available: true },
   { id: 766, name: "Royal Salute 21 yrs", price: 1165, category: "Premium Scotch", description: "Aged luxury blended Scotch.", is_available: true },
   { id: 767, name: "Johnnie Walker Blue Label", price: 1210, category: "Premium Scotch", description: "Rareest blend masterpiece.", is_available: true },
-
-  // WINE
   { id: 800, name: "Fratelli Classic Shiraz (Red Wine)", price: 1199, category: "Wine", description: "Bottle (1199).", is_available: true },
   { id: 801, name: "Sula Zinfandel (Red Wine)", price: 1750, category: "Wine", description: "Bottle (1750).", is_available: true },
   { id: 802, name: "Sula Cabernet Shiraz (Red Wine)", price: 1750, category: "Wine", description: "Bottle (1750).", is_available: true },
@@ -503,13 +432,9 @@ const MASTER_PUB_MENU = [
   { id: 812, name: "Sula Brut (Bottle)", price: 3045, category: "Wine", description: "Indian sparkling wine bottle.", is_available: true },
   { id: 813, name: "Moët & Chandon (Bottle)", price: 13500, category: "Wine", description: "Luxury French champagne.", is_available: true },
   { id: 814, name: "Martini Asti / Rose / Prosecco (Bottle)", price: 3800, category: "Wine", description: "Italian sparkling wine bottle.", is_available: true },
-
-  // BREEZER
   { id: 830, name: "Cranberry / Blackberry Breezer", price: 265, category: "Breezer", description: "Alcopop refresher.", is_available: true },
   { id: 831, name: "Blueberry / Mango Peach Breezer", price: 265, category: "Breezer", description: "Alcopop refresher.", is_available: true },
   { id: 832, name: "Jamaican Passion Breezer", price: 265, category: "Breezer", description: "Alcopop refresher.", is_available: true },
-
-  // BEVERAGES
   { id: 840, name: "Mineral Water", price: 50, category: "Beverages", description: "Bottled water.", is_available: true },
   { id: 841, name: "Soda", price: 45, category: "Beverages", description: "Club soda.", is_available: true },
   { id: 842, name: "Lime Water / Soda", price: 100, category: "Beverages", description: "Fresh lime cooler.", is_available: true },
@@ -703,13 +628,20 @@ export default function RaahiAdminDashboard() {
           <h1 className="font-serif text-4xl text-white mt-1">Raahi Operations Control</h1>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="bg-green-500/10 border border-green-500/30 text-green-400 px-4 py-2 rounded-full text-xs uppercase tracking-widest flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/kds"
+            className="bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg hover:opacity-90 transition-all inline-flex items-center gap-2"
+          >
+            <span>🖥️ Open KDS Screen</span>
+          </Link>
+
+          <div className="bg-green-500/10 border border-green-500/30 text-green-400 px-4 py-2.5 rounded-full text-xs uppercase tracking-widest flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-ping"></span> Live Sync Active
           </div>
           <button 
             onClick={() => setIsAuthenticated(false)}
-            className="border border-white/10 text-gray-400 hover:text-white px-5 py-2 rounded-full text-xs uppercase tracking-widest transition-all cursor-pointer"
+            className="border border-white/10 text-gray-400 hover:text-white px-5 py-2.5 rounded-full text-xs uppercase tracking-widest transition-all cursor-pointer"
           >
             Logout
           </button>
