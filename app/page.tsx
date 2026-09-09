@@ -421,11 +421,10 @@ export default function RaahiQissaHome() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isReservationOpen, setIsReservationOpen] = useState(false);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
-  const [isStaffKdsOpen, setIsStaffKdsOpen] = useState(false); // Staff KDS Modal State
+  const [isStaffKdsOpen, setIsStaffKdsOpen] = useState(false);
   const [tableNum, setTableNum] = useState("01");
   const [activeHoverIndex, setActiveHoverIndex] = useState<number>(0);
 
-  // Staff KDS state inside modal
   const [staffOrders, setStaffOrders] = useState<any[]>([]);
   const [menuItems, setMenuItems] = useState<any[]>(MASTER_PUB_MENU);
   const [staffTab, setStaffTab] = useState<"kds" | "inventory">("kds");
@@ -471,7 +470,6 @@ export default function RaahiQissaHome() {
     };
   }, []);
 
-  // Fetch orders for Staff KDS Modal
   useEffect(() => {
     const fetchStaffOrders = async () => {
       const { data, error } = await supabase
