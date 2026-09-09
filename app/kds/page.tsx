@@ -87,22 +87,22 @@ export default function KdsPage() {
   return (
     <main className="bg-[#06080C] text-[#F4F0EA] min-h-screen font-sans p-4 sm:p-8">
       
-      {/* STAFF KDS HEADER (NO PASSCODE, NO REVENUE DATA) */}
+      {/* STAFF KDS HEADER (NO ADMIN LINKS, PURELY KITCHEN OPS) */}
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 border-b border-white/10 pb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-ping"></span>
-            <span className="text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] font-semibold">Staff Kitchen & Bar Queue</span>
+            <span className="text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] font-semibold">Staff Kitchen & Bar Station</span>
           </div>
-          <h1 className="font-serif text-3xl sm:text-4xl text-white">Raahi KDS Station</h1>
+          <h1 className="font-serif text-3xl sm:text-4xl text-white">Raahi KDS Queue</h1>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div>
           <Link
             href="/"
             className="border border-[#D4AF37]/40 text-[#D4AF37] px-4 py-2 rounded-xl text-xs uppercase tracking-wider font-semibold hover:bg-[#D4AF37] hover:text-black transition-all"
           >
-            Home ↗
+            ← Exit to Homepage
           </Link>
         </div>
       </header>

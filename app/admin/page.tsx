@@ -419,17 +419,13 @@ export default function RaahiAdminDashboard() {
   const [passcode, setPasscode] = useState("");
   const [allOrders, setAllOrders] = useState<any[]>([]);
   const [menuItems, setMenuItems] = useState<any[]>(MASTER_PUB_MENU);
-  const [activeTab, setActiveTab] = useState<"active" | "history" | "menu">("active");
   
-  const [adminCategory, setAdminCategory] = useState("All");
-  const [adminSearch, setAdminSearch] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(false);
-
+  // Restricted Admin Navigation: Only "active" (Live Queue) and "history" (Billing History) for managers
+  const [activeTab, setActiveTab] = useState<"active" | "history">("active");
+  
+  // Checkout Modal State
   const [checkoutTable, setCheckoutTable] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"UPI" | "Card" | "Cash">("UPI");
-
-  const [editingPriceId, setEditingPriceId] = useState<number | null>(null);
-  const [tempPrice, setTempPrice] = useState<number>(0);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -501,19 +497,6 @@ export default function RaahiAdminDashboard() {
     }
   };
 
-  const toggleAvailability = (id: number) => {
-    setMenuItems(prev =>
-      prev.map(item => item.id === id ? { ...item, is_available: !item.is_available } : item)
-    );
-  };
-
-  const savePriceEdit = (id: number) => {
-    setMenuItems(prev =>
-      prev.map(item => item.id === id ? { ...item, price: tempPrice } : item)
-    );
-    setEditingPriceId(null);
-  };
-
   if (!isAuthenticated) {
     return (
       <main className="bg-[#06080C] text-[#F4F0EA] min-h-screen flex items-center justify-center font-sans p-6">
@@ -554,18 +537,25 @@ export default function RaahiAdminDashboard() {
     );
   }
 
-  // --- REVENUE CALCULATIONS ---
+  // --- BULLETPROOF ROBUST DATE CALCULATIONS FOR EARNINGS ---
   const paidOrders = allOrders.filter(o => o.status.startsWith("Paid via"));
-  const todayStr = new Date().toLocaleDateString();
+  const now = new Date();
   
   const dailyRevenue = paidOrders
-    .filter(o => new Date(o.created_at).toLocaleDateString() === todayStr)
+    .filter(o => {
+      const orderDate = new Date(o.created_at);
+      return (
+        orderDate.getFullYear() === now.getFullYear() &&
+        orderDate.getMonth() === now.getMonth() &&
+        orderDate.getDate() === now.getDate()
+      );
+    })
     .reduce((sum, o) => sum + (o.total || 0), 0);
 
   const weeklyRevenue = paidOrders
     .filter(o => {
       const orderDate = new Date(o.created_at);
-      const diffTime = Math.abs(new Date().getTime() - orderDate.getTime());
+      const diffTime = Math.abs(now.getTime() - orderDate.getTime());
       const diffDays = diffTime / (1000 * 60 * 60 * 24);
       return diffDays <= 7;
     })
@@ -574,7 +564,6 @@ export default function RaahiAdminDashboard() {
   const monthlyRevenue = paidOrders
     .filter(o => {
       const orderDate = new Date(o.created_at);
-      const now = new Date();
       return orderDate.getMonth() === now.getMonth() && orderDate.getFullYear() === now.getFullYear();
     })
     .reduce((sum, o) => sum + (o.total || 0), 0);
@@ -582,7 +571,7 @@ export default function RaahiAdminDashboard() {
   const yearlyRevenue = paidOrders
     .filter(o => {
       const orderDate = new Date(o.created_at);
-      return orderDate.getFullYear() === new Date().getFullYear();
+      return orderDate.getFullYear() === now.getFullYear();
     })
     .reduce((sum, o) => sum + (o.total || 0), 0);
 
@@ -597,22 +586,6 @@ export default function RaahiAdminDashboard() {
 
   const tableCheckoutOrders = checkoutTable ? activeTableOrders.filter(o => o.table_num === checkoutTable) : [];
   const tableCheckoutTotal = tableCheckoutOrders.reduce((sum, o) => sum + (o.total || 0), 0);
-
-  const searchSuggestions = adminSearch.trim() === "" ? [] : menuItems.filter(item => 
-    item.name.toLowerCase().includes(adminSearch.toLowerCase())
-  );
-
-  const filteredAdminMenu = menuItems.filter(item => {
-    const matchesCategory = adminCategory === "All" || item.category === adminCategory;
-    const matchesSearch = adminSearch.trim() === "" || 
-                          item.name.toLowerCase().includes(adminSearch.toLowerCase()) || 
-                          item.description.toLowerCase().includes(adminSearch.toLowerCase());
-    
-    if (adminSearch.trim() !== "") {
-      return matchesSearch;
-    }
-    return matchesCategory;
-  });
 
   return (
     <main className="bg-[#06080C] text-[#F4F0EA] min-h-screen font-sans p-6 md:p-12 relative">
@@ -727,7 +700,7 @@ export default function RaahiAdminDashboard() {
         </div>
       </div>
 
-      {/* --- NAVIGATION TABS --- */}
+      {/* --- RESTRICTED NAVIGATION TABS (NO MENU CONTROL TAB FOR STAFF/MANAGERS) --- */}
       <div className="max-w-7xl mx-auto flex gap-4 mb-8 border-b border-white/10 pb-4">
         <button
           onClick={() => setActiveTab("active")}
@@ -744,14 +717,6 @@ export default function RaahiAdminDashboard() {
           }`}
         >
           Billing History ({historyOrders.length})
-        </button>
-        <button
-          onClick={() => setActiveTab("menu")}
-          className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all cursor-pointer ${
-            activeTab === "menu" ? "bg-[#D4AF37] text-black shadow-lg" : "bg-white/5 text-gray-400 hover:text-white"
-          }`}
-        >
-          Menu & Inventory Control ({menuItems.length})
         </button>
       </div>
 
@@ -817,7 +782,7 @@ export default function RaahiAdminDashboard() {
               </div>
             )}
           </div>
-        ) : activeTab === "history" ? (
+        ) : (
           <div>
             <h2 className="font-serif text-2xl text-white mb-6">Settled Billing History</h2>
             {historyOrders.length === 0 ? (
@@ -854,147 +819,6 @@ export default function RaahiAdminDashboard() {
                         <span className="text-[10px] text-gray-500 uppercase tracking-widest">{new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         <span className="font-serif text-lg text-gray-300">₹{order.total}</span>
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ) : (
-          
-          /* --- MENU & INVENTORY CONTROL TAB --- */
-          <div className="space-y-6">
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-              <div>
-                <h2 className="font-serif text-2xl text-white">Menu & Inventory Control</h2>
-                <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest">Search food & drinks, toggle stock, or adjust prices instantly</p>
-              </div>
-
-              <div className="w-full lg:w-80 relative">
-                <input
-                  type="text"
-                  placeholder="Type to search food & drinks..."
-                  value={adminSearch}
-                  onChange={(e) => {
-                    setAdminSearch(e.target.value);
-                    setShowSuggestions(true);
-                  }}
-                  onFocus={() => setShowSuggestions(true)}
-                  className="w-full bg-[#12100E] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]"
-                />
-
-                {showSuggestions && searchSuggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-[#12100E] border border-white/15 rounded-xl shadow-2xl z-50 overflow-hidden max-h-60 overflow-y-auto">
-                    {searchSuggestions.map((sug) => (
-                      <div
-                        key={sug.id}
-                        onClick={() => {
-                          setAdminSearch(sug.name);
-                          setShowSuggestions(false);
-                        }}
-                        className="px-4 py-3 hover:bg-white/5 border-b border-white/5 last:border-none cursor-pointer flex justify-between items-center text-xs"
-                      >
-                        <span className="text-white font-medium">{sug.name}</span>
-                        <span className="text-[#D4AF37]">₹{sug.price}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
-              {MENU_CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => {
-                    setAdminCategory(cat);
-                    setAdminSearch("");
-                  }}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest whitespace-nowrap transition-all cursor-pointer shrink-0 ${
-                    adminCategory === cat && !adminSearch
-                      ? "bg-[#D4AF37] text-black shadow-md"
-                      : "bg-[#12100E] text-gray-400 hover:text-white border border-white/10"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-              {adminSearch && (
-                <button
-                  onClick={() => setAdminSearch("")}
-                  className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest whitespace-nowrap bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 cursor-pointer shrink-0"
-                >
-                  Clear Search ✕
-                </button>
-              )}
-            </div>
-
-            {filteredAdminMenu.length === 0 ? (
-              <div className="bg-[#12100E] border border-white/10 rounded-2xl p-16 text-center text-gray-400 text-sm">
-                No matching menu items found.
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredAdminMenu.map((item) => (
-                  <div key={item.id} className={`bg-[#12100E] border rounded-2xl p-6 shadow-xl flex flex-col justify-between transition-all ${item.is_available ? 'border-white/10' : 'border-red-500/30 opacity-60'}`}>
-                    <div>
-                      <div className="flex justify-between items-start gap-2 mb-2">
-                        <div>
-                          <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] block mb-1">{item.category}</span>
-                          <h3 className="font-serif text-base text-white">{item.name}</h3>
-                        </div>
-                        
-                        <span className={`text-[10px] px-2.5 py-1 rounded-full uppercase tracking-widest font-bold shrink-0 ${
-                          item.is_available ? "bg-green-500/10 text-green-400 border border-green-500/30" : "bg-red-500/10 text-red-400 border border-red-500/30"
-                        }`}>
-                          {item.is_available ? "In Stock" : "Out of Stock"}
-                        </span>
-                      </div>
-                      <p className="text-gray-400 text-xs leading-relaxed mb-6">{item.description}</p>
-                    </div>
-
-                    <div className="border-t border-white/10 pt-4 flex items-center justify-between gap-4">
-                      <div>
-                        <span className="text-[10px] text-gray-500 uppercase tracking-widest block">Price</span>
-                        {editingPriceId === item.id ? (
-                          <div className="flex items-center gap-2 mt-1">
-                            <input
-                              type="number"
-                              value={tempPrice}
-                              onChange={(e) => setTempPrice(Number(e.target.value))}
-                              className="w-20 bg-[#1F1C18] border border-[#D4AF37] rounded-lg px-2 py-1 text-sm text-white outline-none"
-                            />
-                            <button
-                              onClick={() => savePriceEdit(item.id)}
-                              className="bg-[#D4AF37] text-black px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer"
-                            >
-                              Save
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="font-serif text-xl text-[#D4AF37]">₹{item.price}</span>
-                            <button
-                              onClick={() => { setEditingPriceId(item.id); setTempPrice(item.price); }}
-                              className="text-[10px] text-gray-400 hover:text-white uppercase tracking-widest underline cursor-pointer"
-                            >
-                              Edit
-                            </button>
-                          </div>
-                        )}
-                      </div>
-
-                      <button
-                        onClick={() => toggleAvailability(item.id)}
-                        className={`px-4 py-2 rounded-xl text-[10px] uppercase tracking-widest font-bold transition-all cursor-pointer ${
-                          item.is_available 
-                            ? "bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20" 
-                            : "bg-green-500/10 border border-green-500/30 text-green-400 hover:bg-green-500/20"
-                        }`}
-                      >
-                        {item.is_available ? "Mark Out of Stock" : "Mark In Stock"}
-                      </button>
                     </div>
                   </div>
                 ))}
