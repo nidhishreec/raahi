@@ -520,8 +520,8 @@ export default function RaahiAdminDashboard() {
         <div className="w-full max-w-md bg-[#12100E] border border-white/10 rounded-2xl p-8 shadow-2xl">
           <div className="text-center mb-8">
             <span className="text-[#D4AF37] text-2xl">✦</span>
-            <h1 className="font-serif text-3xl text-white mt-2">Raahi Manager Login</h1>
-            <p className="text-gray-400 text-xs mt-1 uppercase tracking-widest">Owner & Manager Financial Access</p>
+            <h1 className="font-serif text-3xl text-white mt-2">Raahi Owner Portal</h1>
+            <p className="text-gray-400 text-xs mt-1 uppercase tracking-widest">Restricted Financial & Executive Access</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
@@ -540,7 +540,7 @@ export default function RaahiAdminDashboard() {
               type="submit"
               className="w-full bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black py-4 rounded-xl text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-all cursor-pointer shadow-lg"
             >
-              Access Owner Dashboard
+              Unlock Executive Dashboard
             </button>
           </form>
 
@@ -554,21 +554,18 @@ export default function RaahiAdminDashboard() {
     );
   }
 
-  // --- REVENUE CALCULATIONS (DAILY, WEEKLY, MONTHLY, YEARLY) ---
+  // --- REVENUE CALCULATIONS ---
   const paidOrders = allOrders.filter(o => o.status.startsWith("Paid via"));
-  const now = new Date();
+  const todayStr = new Date().toLocaleDateString();
   
   const dailyRevenue = paidOrders
-    .filter(o => {
-      const orderDate = new Date(o.created_at);
-      return orderDate.toDateString() === now.toDateString();
-    })
+    .filter(o => new Date(o.created_at).toLocaleDateString() === todayStr)
     .reduce((sum, o) => sum + (o.total || 0), 0);
 
   const weeklyRevenue = paidOrders
     .filter(o => {
       const orderDate = new Date(o.created_at);
-      const diffTime = Math.abs(now.getTime() - orderDate.getTime());
+      const diffTime = Math.abs(new Date().getTime() - orderDate.getTime());
       const diffDays = diffTime / (1000 * 60 * 60 * 24);
       return diffDays <= 7;
     })
@@ -577,6 +574,7 @@ export default function RaahiAdminDashboard() {
   const monthlyRevenue = paidOrders
     .filter(o => {
       const orderDate = new Date(o.created_at);
+      const now = new Date();
       return orderDate.getMonth() === now.getMonth() && orderDate.getFullYear() === now.getFullYear();
     })
     .reduce((sum, o) => sum + (o.total || 0), 0);
@@ -584,9 +582,14 @@ export default function RaahiAdminDashboard() {
   const yearlyRevenue = paidOrders
     .filter(o => {
       const orderDate = new Date(o.created_at);
-      return orderDate.getFullYear() === now.getFullYear();
+      return orderDate.getFullYear() === new Date().getFullYear();
     })
     .reduce((sum, o) => sum + (o.total || 0), 0);
+
+  const upiRevenue = paidOrders.filter(o => o.status === "Paid via UPI").reduce((sum, o) => sum + (o.total || 0), 0);
+  const cardRevenue = paidOrders.filter(o => o.status === "Paid via Card").reduce((sum, o) => sum + (o.total || 0), 0);
+  const cashRevenue = paidOrders.filter(o => o.status === "Paid via Cash").reduce((sum, o) => sum + (o.total || 0), 0);
+  const totalRevenue = paidOrders.reduce((sum, o) => sum + (o.total || 0), 0);
 
   const liveKitchenOrders = allOrders.filter(o => ["Pending Kitchen", "Preparing"].includes(o.status));
   const activeTableOrders = allOrders.filter(o => ["Pending Kitchen", "Preparing", "Served"].includes(o.status));
@@ -614,7 +617,7 @@ export default function RaahiAdminDashboard() {
   return (
     <main className="bg-[#06080C] text-[#F4F0EA] min-h-screen font-sans p-6 md:p-12 relative">
       
-      {/* --- OWNER DASHBOARD HEADER --- */}
+      {/* --- EXECUTIVE DASHBOARD HEADER --- */}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center border-b border-white/10 pb-6 mb-8 gap-4">
         <div>
           <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37] font-semibold">OWNER FINANCIAL & OPERATIONS SUITE</span>
@@ -641,9 +644,9 @@ export default function RaahiAdminDashboard() {
         </div>
       </div>
 
-      {/* --- OWNER EARNINGS ANALYTICS (DAILY, WEEKLY, MONTHLY, YEARLY) --- */}
-      <div className="max-w-7xl mx-auto mb-8">
-        <h3 className="text-xs uppercase tracking-widest text-[#D4AF37] mb-3">Executive Revenue & Earnings Breakdown</h3>
+      {/* --- ROW 1: TIME-BASED EARNINGS (DAILY, WEEKLY, MONTHLY, YEARLY) --- */}
+      <div className="max-w-7xl mx-auto mb-6">
+        <h3 className="text-xs uppercase tracking-widest text-[#D4AF37] mb-3">Executive Revenue & Timeframe Earnings</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-[#12100E] border border-[#D4AF37]/40 rounded-2xl p-5 shadow-xl">
             <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] block mb-1">Today's Earnings (Daily)</span>
@@ -667,6 +670,36 @@ export default function RaahiAdminDashboard() {
             <span className="text-[10px] uppercase tracking-widest text-gray-400 block mb-1">This Year (Yearly)</span>
             <span className="font-serif text-3xl text-white">₹{yearlyRevenue}</span>
             <span className="text-[10px] text-gray-500 block mt-2">Annual cumulative revenue</span>
+          </div>
+        </div>
+      </div>
+
+      {/* --- ROW 2: PAYMENT METHOD BREAKDOWN (UPI, CARD, CASH) --- */}
+      <div className="max-w-7xl mx-auto mb-8">
+        <h3 className="text-xs uppercase tracking-widest text-[#D4AF37] mb-3">Payment Method Collection Breakdown</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-[#12100E] border border-white/10 rounded-2xl p-5 shadow-xl">
+            <span className="text-[10px] uppercase tracking-widest text-gray-400 block mb-1">Total Settled Revenue</span>
+            <span className="font-serif text-3xl text-white">₹{totalRevenue}</span>
+            <span className="text-[10px] text-gray-500 block mt-2">{paidOrders.length} settled bills</span>
+          </div>
+
+          <div className="bg-[#12100E] border border-white/10 rounded-2xl p-5 shadow-xl">
+            <span className="text-[10px] uppercase tracking-widest text-gray-400 block mb-1">UPI Payments</span>
+            <span className="font-serif text-3xl text-[#D4AF37]">₹{upiRevenue}</span>
+            <span className="text-[10px] text-gray-500 block mt-2">Digital instant transfer</span>
+          </div>
+
+          <div className="bg-[#12100E] border border-white/10 rounded-2xl p-5 shadow-xl">
+            <span className="text-[10px] uppercase tracking-widest text-gray-400 block mb-1">Card Payments</span>
+            <span className="font-serif text-3xl text-white">₹{cardRevenue}</span>
+            <span className="text-[10px] text-gray-500 block mt-2">POS terminal swipe</span>
+          </div>
+
+          <div className="bg-[#12100E] border border-white/10 rounded-2xl p-5 shadow-xl">
+            <span className="text-[10px] uppercase tracking-widest text-gray-400 block mb-1">Cash Payments</span>
+            <span className="font-serif text-3xl text-white">₹{cashRevenue}</span>
+            <span className="text-[10px] text-gray-500 block mt-2">Physical drawer cash</span>
           </div>
         </div>
       </div>
@@ -870,7 +903,7 @@ export default function RaahiAdminDashboard() {
               </div>
             </div>
 
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20">
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
               {MENU_CATEGORIES.map((cat) => (
                 <button
                   key={cat}

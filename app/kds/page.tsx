@@ -17,6 +17,7 @@ export default function KdsPage() {
       const { data, error } = await supabase
         .from("orders")
         .select("*")
+        .in("status", ["Pending Kitchen", "Preparing", "Served"])
         .order("created_at", { ascending: false });
 
       if (data) setOrders(data);
@@ -31,14 +32,20 @@ export default function KdsPage() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "orders" },
-        (payload) => {
+        (payload: any) => {
           if (payload.eventType === "INSERT") {
-            setOrders((prev) => [payload.new, ...prev]);
-            playNotificationSound();
+            if (["Pending Kitchen", "Preparing", "Served"].includes(payload.new.status)) {
+              setOrders((prev) => [payload.new, ...prev]);
+              playNotificationSound();
+            }
           } else if (payload.eventType === "UPDATE") {
-            setOrders((prev) =>
-              prev.map((ord) => (ord.id === payload.new.id ? payload.new : ord))
-            );
+            if (payload.new.status.startsWith("Paid via")) {
+              setOrders((prev) => prev.filter((ord) => ord.id !== payload.new.id));
+            } else {
+              setOrders((prev) =>
+                prev.map((ord) => (ord.id === payload.new.id ? payload.new : ord))
+              );
+            }
           } else if (payload.eventType === "DELETE") {
             setOrders((prev) => prev.filter((ord) => ord.id !== payload.old.id));
           }
@@ -80,7 +87,7 @@ export default function KdsPage() {
   return (
     <main className="bg-[#06080C] text-[#F4F0EA] min-h-screen font-sans p-4 sm:p-8">
       
-      {/* STAFF KDS HEADER (NO REVENUE DATA) */}
+      {/* STAFF KDS HEADER (NO PASSCODE, NO REVENUE DATA) */}
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 border-b border-white/10 pb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -91,12 +98,6 @@ export default function KdsPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Link
-            href="/admin"
-            className="border border-white/20 bg-white/5 hover:bg-white/10 text-white px-4 py-2 rounded-xl text-xs uppercase tracking-wider font-semibold transition-all"
-          >
-            Manager Portal 🔒
-          </Link>
           <Link
             href="/"
             className="border border-[#D4AF37]/40 text-[#D4AF37] px-4 py-2 rounded-xl text-xs uppercase tracking-wider font-semibold hover:bg-[#D4AF37] hover:text-black transition-all"
@@ -136,7 +137,7 @@ export default function KdsPage() {
         </div>
       ) : filteredOrders.length === 0 ? (
         <div className="bg-[#12100E] border border-white/10 rounded-2xl p-16 text-center text-gray-400 text-sm">
-          No orders found in this queue. Everything is caught up! 🥂
+          No active orders found in this queue. Everything is caught up! 🥂
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
