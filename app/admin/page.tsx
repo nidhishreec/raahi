@@ -631,17 +631,17 @@ export default function RaahiAdminDashboard() {
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href="/kds"
-            className="bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg hover:opacity-90 transition-all inline-flex items-center gap-2"
+            className="bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg hover:opacity-90 transition-all inline-flex items-center gap-2"
           >
             <span>🖥️ Open KDS Screen</span>
           </Link>
 
-          <div className="bg-green-500/10 border border-green-500/30 text-green-400 px-4 py-2.5 rounded-full text-xs uppercase tracking-widest flex items-center gap-2">
+          <div className="bg-green-500/10 border border-green-500/30 text-green-400 px-4 py-2 rounded-full text-xs uppercase tracking-widest flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-ping"></span> Live Sync Active
           </div>
           <button 
             onClick={() => setIsAuthenticated(false)}
-            className="border border-white/10 text-gray-400 hover:text-white px-5 py-2.5 rounded-full text-xs uppercase tracking-widest transition-all cursor-pointer"
+            className="border border-white/10 text-gray-400 hover:text-white px-5 py-2 rounded-full text-xs uppercase tracking-widest transition-all cursor-pointer"
           >
             Logout
           </button>
