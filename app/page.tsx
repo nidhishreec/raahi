@@ -8,7 +8,121 @@ import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function RaahiQissaHome() {
+const SIGNATURE_PLATES = [
+  "https://images.unsplash.com/photo-1543353071-10c8ba85a904?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1565895405312-ea6b835904e2?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1539136788836-5699e78bfc75?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1506084868230-bb9d95c24759?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=600&q=80"
+];
+
+const AMBIENCE_COL_1 = [
+  "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1572116469696-31de0f17cc34?auto=format&fit=crop&w=800&q=80"
+];
+
+const AMBIENCE_COL_2 = [
+  "https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1537047902294-62a40c20a6ae?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1525610553991-2bede1a236e2?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80"
+];
+
+// Luxury Cutlery Sunburst Emblem Component
+function RaahiBrandLogo({ compact = false, large = false }: { compact?: boolean; large?: boolean }) {
+  return (
+    <div className={`flex ${large ? "flex-col items-center gap-4" : "items-center gap-3"}`}>
+      <div className={`relative flex items-center justify-center ${compact ? "w-8 h-8" : large ? "w-20 h-20" : "w-10 h-10"}`}>
+        <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-lg" fill="url(#goldGrad)">
+          <defs>
+            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#F9F1D8" />
+              <stop offset="50%" stopColor="#D4AF37" />
+              <stop offset="100%" stopColor="#85530F" />
+            </linearGradient>
+          </defs>
+          <g transform="translate(60, 60)">
+            {[0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5].map((angle, idx) => (
+              <g key={idx} transform={`rotate(${angle})`}>
+                <ellipse cx="0" cy="-38" rx="3.2" ry="5" />
+                <rect x="-1" y="-32" width="2" height="25" rx="1" />
+              </g>
+            ))}
+            <circle cx="0" cy="0" r="14" fill="#070e22" stroke="url(#goldGrad)" strokeWidth="2.5" />
+          </g>
+        </svg>
+      </div>
+      <div className={`flex flex-col ${large ? "items-center text-center" : "text-left"}`}>
+        <span className={`font-serif tracking-[0.35em] uppercase text-[#E5C58A] font-normal ${compact ? "text-xs" : large ? "text-4xl sm:text-6xl tracking-[0.45em]" : "text-sm"}`}>
+          RAAHI
+        </span>
+        <span className={`uppercase tracking-[0.25em] text-[#D4AF37]/80 font-light font-sans ${compact ? "text-[7px]" : large ? "text-xs tracking-[0.35em] mt-1.5" : "text-[8px]"}`}>
+          A Tale of Food
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function StatCounter({ end, decimals = 0, suffix = "" }: { end: number; decimals?: number; suffix?: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const obj = { val: 0 };
+    const tween = gsap.to(obj, {
+      val: end,
+      duration: 2.5,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: el,
+        start: "top 85%",
+        once: true,
+      },
+      onUpdate: () => {
+        setCount(obj.val);
+      },
+    });
+
+    return () => {
+      tween.kill();
+    };
+  }, [end]);
+
+  return (
+    <span ref={ref}>
+      {decimals > 0 ? count.toFixed(decimals) : Math.floor(count)}
+      {suffix}
+    </span>
+  );
+}
+
+export default function RaahiHomePage() {
+  const [isLoading, setIsLoading] = useState(true);
+  const preloaderRef = useRef<HTMLDivElement>(null);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isReservationOpen, setIsReservationOpen] = useState(false);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
@@ -20,8 +134,28 @@ export default function RaahiQissaHome() {
 
   const heroRef = useRef<HTMLElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      if (preloaderRef.current) {
+        gsap.to(preloaderRef.current, {
+          yPercent: -100,
+          duration: 1.2,
+          ease: "power3.inOut",
+          onComplete: () => setIsLoading(false),
+        });
+      } else {
+        setIsLoading(false);
+      }
+    }, 1600);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) return;
+
     const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
     const raf = (time: number) => lenis.raf(time * 1000);
     lenis.on("scroll", ScrollTrigger.update);
@@ -29,7 +163,7 @@ export default function RaahiQissaHome() {
     gsap.ticker.lagSmoothing(0);
 
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-    tl.fromTo(titleRef.current, { opacity: 0, scale: 0.95, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 1.4 });
+    tl.fromTo(titleRef.current, { opacity: 0, scale: 0.96, y: 25 }, { opacity: 1, scale: 1, y: 0, duration: 1.4 });
 
     gsap.utils.toArray<HTMLElement>(".reveal").forEach((element) => {
       gsap.fromTo(
@@ -38,22 +172,48 @@ export default function RaahiQissaHome() {
         {
           opacity: 1,
           y: 0,
-          duration: 1,
+          duration: 1.2,
           ease: "power3.out",
           scrollTrigger: { trigger: element, start: "top 85%", toggleActions: "play none none reverse" },
         }
       );
     });
 
+    let animationFrameId: number;
+    const updatePlateCenterTilt = () => {
+      if (trackRef.current) {
+        const plates = trackRef.current.querySelectorAll<HTMLElement>(".plate-item");
+        const screenCenter = window.innerWidth / 2;
+
+        plates.forEach((plate) => {
+          const rect = plate.getBoundingClientRect();
+          const plateCenter = rect.left + rect.width / 2;
+          const distance = Math.abs(screenCenter - plateCenter);
+
+          if (distance < 220) {
+            plate.style.transform = "rotate(-6deg) scale(1.08)";
+            plate.style.borderColor = "#D4AF37";
+            plate.style.boxShadow = "0 15px 35px rgba(212, 175, 55, 0.25)";
+          } else {
+            plate.style.transform = "rotate(0deg) scale(1)";
+            plate.style.borderColor = "rgba(212, 175, 55, 0.25)";
+            plate.style.boxShadow = "0 10px 20px rgba(0,0,0,0.4)";
+          }
+        });
+      }
+      animationFrameId = requestAnimationFrame(updatePlateCenterTilt);
+    };
+
+    animationFrameId = requestAnimationFrame(updatePlateCenterTilt);
+
     return () => {
       gsap.ticker.remove(raf);
       lenis.destroy();
       ScrollTrigger.getAll().forEach((t) => t.kill());
+      cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [isLoading]);
 
-  // Reservation form now actually persists to Supabase via an API
-  // route (see /api/reservations), instead of just showing an alert().
   const handleReservationSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setReservationError("");
@@ -90,186 +250,358 @@ export default function RaahiQissaHome() {
   };
 
   return (
-    <main className="bg-[#080706] text-[#F4F0EA] min-h-screen selection:bg-[#D4AF37] selection:text-black font-sans overflow-x-hidden">
-
+    <main className="bg-[#070e22] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#17275c] via-[#091128] to-[#040713] text-[#F4F0EA] min-h-screen selection:bg-[#D4AF37] selection:text-black font-sans overflow-x-hidden relative">
       <style jsx global>{`
         html { scroll-behavior: auto; }
-        body { background: #080706; margin: 0; }
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap');
+        body { background: #040713; margin: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap');
         .font-serif { font-family: 'Cormorant Garamond', serif; }
         .font-sans { font-family: 'Plus Jakarta Sans', sans-serif; }
-        @keyframes autoSlide { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .animate-auto-slide { display: flex; width: max-content; animation: autoSlide 25s linear infinite; }
-        .animate-auto-slide:hover { animation-play-state: paused; }
+
+        @keyframes plateSlide {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+
+        .animate-plate-track {
+          display: flex;
+          width: max-content;
+          animation: plateSlide 75s linear infinite;
+        }
+
+        .animate-plate-track:hover {
+          animation-play-state: paused;
+        }
+
+        .plate-item {
+          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease;
+        }
+
+        @keyframes scrollUp {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(-50%); }
+        }
+        @keyframes scrollDown {
+          0% { transform: translateY(-50%); }
+          100% { transform: translateY(0); }
+        }
+        .animate-scroll-up {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+          animation: scrollUp 28s linear infinite;
+        }
+        .animate-scroll-down {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+          animation: scrollDown 28s linear infinite;
+        }
       `}</style>
 
-      {/* --- RESPONSIVE TOP NAV --- */}
-      <nav className="absolute top-0 left-0 w-full z-50 px-4 sm:px-6 md:px-12 py-5 flex justify-between items-center backdrop-blur-sm bg-black/30 border-b border-white/5">
-        <button
-          onClick={() => setIsMenuOpen(true)}
-          className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[#D4AF37] hover:text-white transition-colors font-medium cursor-pointer p-2"
+      {/* --- LUXURY PRELOADER --- */}
+      {isLoading && (
+        <div
+          ref={preloaderRef}
+          className="fixed inset-0 z-[200] bg-[#040713] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#17275c] via-[#070e22] to-[#030408] flex flex-col items-center justify-center text-[#F4F0EA]"
         >
-          <span className="text-base">☰</span> MENU
-        </button>
+          <div className="flex flex-col items-center text-center px-4 animate-pulse">
+            <RaahiBrandLogo large={true} />
+            <div className="w-20 h-[1px] bg-[#D4AF37]/50 my-5"></div>
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37]/80 font-light">
+              JP Nagar • Bengaluru
+            </span>
+          </div>
+        </div>
+      )}
 
-        <div></div>
-
-        <div className="flex items-center gap-2 sm:gap-4">
-          {/*
-            Staff KDS now links to the real, passcode-protected /kds
-            route instead of opening an unauthenticated modal on this
-            page. No more bypass -- middleware redirects to
-            /staff-login if there's no valid session.
-          */}
-          <Link
-            href="/kds"
-            className="border border-[#D4AF37]/50 bg-[#D4AF37]/10 px-3.5 sm:px-4 py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all font-semibold cursor-pointer"
+      {/* --- FIXED STICKY TOP NAVBAR --- */}
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-4 grid grid-cols-3 items-center backdrop-blur-md bg-[#040713]/85 border-b border-white/10 shadow-2xl">
+        <div>
+          <button
+            onClick={() => setIsMenuOpen(true)}
+            className="flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-[#D4AF37] hover:text-white transition-colors font-medium cursor-pointer"
           >
-            👨‍🍳 Staff KDS
+            <span>☰</span> MENU
+          </button>
+        </div>
+
+        <div className="flex justify-center">
+          <RaahiBrandLogo compact={true} />
+        </div>
+
+        <div className="flex items-center justify-end gap-3 sm:gap-5">
+          <Link
+            href="/gallery"
+            className="hidden md:inline-block text-xs uppercase tracking-[0.2em] text-gray-300 hover:text-[#D4AF37] transition-colors font-medium"
+          >
+            Gallery
           </Link>
           <button
             onClick={() => setIsQrModalOpen(true)}
-            className="inline-flex items-center gap-1.5 border border-[#D4AF37]/40 px-3.5 sm:px-5 py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all font-semibold cursor-pointer"
+            className="border border-[#D4AF37]/50 px-4 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all font-semibold cursor-pointer"
           >
-            <span>TABLE QR</span>
-            <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-            </svg>
+            ORDER ↗
           </button>
           <button
             onClick={() => setIsReservationOpen(true)}
-            className="bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-4 sm:px-6 py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-[0.2em] font-bold shadow-lg hover:opacity-90 transition-all cursor-pointer"
+            className="bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-5 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] font-bold shadow-lg hover:opacity-90 transition-all cursor-pointer"
           >
-            RESERVE
+            RESERVE ↗
           </button>
         </div>
       </nav>
 
       {/* --- HERO SECTION --- */}
-      <section ref={heroRef} className="relative h-screen w-full flex items-center justify-center overflow-hidden px-4">
+      <section ref={heroRef} className="relative h-screen w-full flex items-center justify-center overflow-hidden px-4 pt-20">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2400&q=95"
             alt="Raahi Luxury Interior Atmosphere"
-            className="w-full h-full object-cover filter brightness-[0.35] contrast-[1.1] scale-105"
+            className="w-full h-full object-cover filter brightness-[0.32] contrast-[1.1] scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#080706] via-[#080706]/60 to-black/70"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-[#D4AF37]/10 rounded-full blur-[100px] pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#070e22] via-[#070e22]/40 to-black/80"></div>
         </div>
 
-        <div className="relative z-10 text-center max-w-3xl px-4 mt-12">
-          <div className="flex flex-col items-center mb-3">
-            <div className="w-9 h-9 rounded-full border border-[#D4AF37]/40 flex items-center justify-center bg-black/40 backdrop-blur-md mb-2 shadow-xl">
-              <span className="text-[#D4AF37] text-xs animate-pulse">✦</span>
-            </div>
-            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.35em] text-[#D4AF37] font-semibold">
-              JP Nagar • Bengaluru
-            </span>
-          </div>
+        <div className="relative z-10 text-center max-w-4xl px-4 mt-8">
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37]/90 font-light mb-4 block">
+            JP Nagar • Bengaluru
+          </span>
 
-          <h1 ref={titleRef} className="font-serif text-6xl sm:text-8xl md:text-9xl tracking-tight text-white mb-4 drop-shadow-2xl">
+          <h1
+            ref={titleRef}
+            className="font-serif font-light text-6xl sm:text-8xl md:text-9xl tracking-[0.06em] mb-6 text-[#F9F6F0] drop-shadow-[0_10px_25px_rgba(0,0,0,0.7)]"
+          >
             Raahi
           </h1>
 
-          <p className="text-[#D3CEC5] text-xs sm:text-sm md:text-base font-light tracking-wide leading-relaxed mb-8 max-w-md sm:max-w-lg mx-auto">
-            Artisanal dining meets a vibrant craft cocktail pub. Celebrating diverse culinary traditions, course by course.
+          <p className="text-[#D3CEC5] text-sm sm:text-base font-light tracking-wide leading-relaxed mb-10 max-w-lg mx-auto">
+            Celebrating the flavors of India with dishes inspired by different regions and creating a dining experience full of variety.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-xs sm:max-w-none mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={() => setIsQrModalOpen(true)}
-              className="inline-flex items-center justify-center gap-2 w-full sm:w-auto bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-7 py-3.5 rounded-full text-[10px] uppercase tracking-[0.2em] font-bold shadow-2xl hover:opacity-90 transition-all cursor-pointer"
+              className="w-full sm:w-auto border border-white/20 bg-black/30 backdrop-blur-md text-white px-8 py-4 rounded-full text-[10px] uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all font-semibold cursor-pointer"
             >
-              <span>Open Table QR Menu</span>
-              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-              </svg>
+              VIEW MENU
             </button>
-            <Link
-              href="/admin"
-              className="w-full sm:w-auto border border-white/20 bg-black/30 backdrop-blur-md text-white px-7 py-3.5 rounded-full text-[10px] uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all font-semibold text-center"
+            <button
+              onClick={() => setIsReservationOpen(true)}
+              className="w-full sm:w-auto bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-8 py-4 rounded-full text-[10px] uppercase tracking-[0.2em] font-bold shadow-2xl hover:opacity-90 transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              Manager Portal 🔒
-            </Link>
+              <span>RESERVE A TABLE</span>
+              <span>→</span>
+            </button>
           </div>
         </div>
       </section>
 
-      {/* --- STORY SECTION --- */}
-      <section className="py-20 md:py-32 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/10 relative">
+      {/* --- WHAT IS RAAHI (STORY WITH OPEN BAR NIGHT LIGHT AMBIENCE) --- */}
+      <section className="py-24 md:py-36 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <div className="reveal relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl h-[350px] sm:h-[450px]">
+          <div className="reveal relative rounded-3xl overflow-hidden shadow-2xl h-[400px] sm:h-[500px]">
             <img
-              src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=85"
-              alt="Raahi luxurious booth seating and atmosphere"
-              className="w-full h-full object-cover filter brightness-90"
+              src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1200&q=85"
+              alt="Raahi Open Bar with Night Light and Great Ambience"
+              className="w-full h-full object-cover filter brightness-95 contrast-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
           </div>
 
-          <div className="reveal space-y-5">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37] font-semibold">— THE STORY —</span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-6xl text-white leading-tight">
+          <div className="reveal space-y-6">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37] font-semibold">
+              — WHAT IS RAAHI? —
+            </span>
+            <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-white leading-tight">
               A word that means <span className="italic font-light text-[#D4AF37]">a tale.</span>
             </h2>
-            <p className="text-[#D3CEC5] font-light leading-relaxed text-xs sm:text-sm md:text-base">
+            <p className="text-[#D3CEC5] font-light leading-relaxed text-sm md:text-base">
               Food is all about its story — the origin, the spices, the texture and the taste of every dish. It is the cornerstone of daily life, of culture, of history.
             </p>
             <p className="text-[#B5B0A6] font-light leading-relaxed text-xs sm:text-sm">
-              'Raahi' tells the extraordinary stories behind the foods we eat: the finest artisanal cuisine and legendary pub drinks, served with careful attention to every detail of ambience and service.
+              'Raahi' tells the extraordinary stories behind the foods we eat: the finest Indian cuisine, served with careful attention to every detail of food, service and ambience.
             </p>
-            <div className="pt-4 border-t border-white/10">
-              <p className="font-serif text-base sm:text-lg text-white italic mb-2">
-                "Raahi is a place of gathering, of celebrations, of business, and of pleasure. Let the story begin..."
-              </p>
-              <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] font-mono">— THE RAAHI PROMISE</span>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* --- LOCATION & FOOTER --- */}
-      <footer id="location" className="bg-[#050403] border-t border-white/10 pt-20 pb-10 px-6 md:px-12 text-center">
-        <div className="max-w-4xl mx-auto space-y-6 mb-12">
-          <div className="w-10 h-10 rounded-full border border-[#D4AF37]/40 flex items-center justify-center bg-black/40 backdrop-blur-md mx-auto shadow-xl">
-            <span className="text-[#D4AF37] text-xs animate-pulse">✦</span>
+      {/* --- AUTOMATIC CENTER-TURNING & SLIDING HIGH-END FOOD PLATES TRACK --- */}
+      <section className="py-24 border-t border-white/10 overflow-hidden bg-black/30">
+        <div className="text-center max-w-3xl mx-auto mb-16 px-6 reveal">
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37] font-semibold block mb-2">— THE MASTERPIECES —</span>
+          <h2 className="font-serif text-4xl sm:text-6xl text-white mb-4">Crafted icons & signature plates.</h2>
+          <p className="text-gray-400 text-sm">Dishes that automatically turn and present themselves as they glide past.</p>
+        </div>
+
+        <div className="relative w-full overflow-hidden py-12" ref={trackRef}>
+          <div className="animate-plate-track flex gap-8 md:gap-14 items-center">
+            {[...SIGNATURE_PLATES, ...SIGNATURE_PLATES].map((plateImg, idx) => (
+              <div
+                key={idx}
+                className="plate-item w-60 h-60 sm:w-76 sm:h-76 shrink-0 rounded-full overflow-hidden border-4 border-[#D4AF37]/30 shadow-2xl relative bg-black cursor-pointer"
+                onClick={() => setIsQrModalOpen(true)}
+              >
+                <img
+                  src={plateImg}
+                  alt={`Signature plate ${idx}`}
+                  className="w-full h-full object-cover filter brightness-95"
+                />
+                <div className="absolute inset-0 bg-black/10 hover:bg-transparent transition-colors"></div>
+              </div>
+            ))}
           </div>
+        </div>
+
+        <div className="text-center mt-12">
+          <Link
+            href="/gallery"
+            className="inline-block border border-[#D4AF37]/50 bg-[#D4AF37]/10 text-[#D4AF37] px-8 py-3.5 rounded-full text-xs uppercase tracking-[0.25em] font-bold hover:bg-[#D4AF37] hover:text-black transition-all shadow-lg"
+          >
+            VIEW THE FULL GALLERY →
+          </Link>
+        </div>
+      </section>
+
+      {/* --- EXPLORE THE MENU CATEGORIES --- */}
+      <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/10">
+        <div className="text-center max-w-3xl mx-auto mb-16 reveal">
+          <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37] font-semibold block mb-2">— THE CUISINE —</span>
+          <h2 className="font-serif text-4xl sm:text-6xl text-white mb-4">Explore the menu, course by course.</h2>
+          <p className="text-gray-400 text-sm">From smoky tandoor grills to slow-simmered curries, biryani, vegetarian specials and more — each category tells its own part of the story.</p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 reveal">
+          {[
+            { title: "Grills & Tandoor", desc: "Smoky, charred, straight from clay ovens", img: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80" },
+            { title: "Traditional Curries", desc: "Slow-simmered & spice-forward richness", img: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80" },
+            { title: "Biryani & Rice", desc: "Fragrant basmati, sealed & slow-cooked", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80" },
+            { title: "Vegetarian Specials", desc: "Rich, comforting, full of flavor", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" },
+            { title: "Drinks & Cocktails", desc: "Crafted cocktails, mocktails & spirits", img: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80" }
+          ].map((cat, idx) => (
+            <div key={idx} onClick={() => setIsQrModalOpen(true)} className="group relative h-72 rounded-2xl overflow-hidden cursor-pointer shadow-xl">
+              <img src={cat.img} alt={cat.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 filter brightness-75" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end">
+                <h3 className="font-serif text-lg text-white mb-1 group-hover:text-[#D4AF37] transition-colors">{cat.title}</h3>
+                <p className="text-[11px] text-gray-300 font-light">{cat.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* --- THE ROOM: DUAL-COLUMN OPPOSITE VERTICAL SCROLLER & TEXT --- */}
+      <section className="py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center reveal">
+          
+          <div className="relative h-[550px] overflow-hidden rounded-3xl bg-black/20 p-4 flex gap-4">
+            <div className="w-1/2 overflow-hidden h-full relative">
+              <div className="animate-scroll-up absolute top-0 left-0 w-full">
+                {[...AMBIENCE_COL_1, ...AMBIENCE_COL_1, ...AMBIENCE_COL_1].map((imgUrl, i) => (
+                  <div key={i} className="h-64 rounded-2xl overflow-hidden shadow-2xl shrink-0">
+                    <img src={imgUrl} alt="Raahi Luxury Ambience" className="w-full h-full object-cover filter brightness-95 hover:scale-105 transition-transform duration-500" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="w-1/2 overflow-hidden h-full relative">
+              <div className="animate-scroll-down absolute top-0 left-0 w-full">
+                {[...AMBIENCE_COL_2, ...AMBIENCE_COL_2, ...AMBIENCE_COL_2].map((imgUrl, i) => (
+                  <div key={i} className="h-64 rounded-2xl overflow-hidden shadow-2xl shrink-0">
+                    <img src={imgUrl} alt="Raahi Luxury Ambience" className="w-full h-full object-cover filter brightness-95 hover:scale-105 transition-transform duration-500" />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-[#091128] to-transparent pointer-events-none z-10"></div>
+            <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-[#091128] to-transparent pointer-events-none z-10"></div>
+          </div>
+
+          <div className="space-y-6">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37] font-semibold">— THE ROOM —</span>
+            <h2 className="font-serif text-4xl sm:text-6xl text-white leading-tight">Beneath the blossoms.</h2>
+            <p className="text-[#D3CEC5] font-light leading-relaxed text-sm md:text-base">
+              Step inside and the everyday falls away. A canopy of blossom drifts overhead; navy velvet, warm brass light and marble set the scene for the evening ahead.
+            </p>
+            <p className="text-[#B5B0A6] font-light leading-relaxed text-xs sm:text-sm">
+              A place of gathering and celebration — designed so the story of every meal feels like an occasion.
+            </p>
+            <div className="pt-4">
+              <button
+                onClick={() => setIsReservationOpen(true)}
+                className="inline-flex items-center gap-2 border border-[#D4AF37]/50 bg-[#D4AF37]/10 text-[#D4AF37] px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-bold hover:bg-[#D4AF37] hover:text-black transition-all cursor-pointer shadow-lg"
+              >
+                <span>Book Your Table</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* --- STATS SECTION WITH ANIMATED NUMBERS --- */}
+      <section className="py-24 bg-black/40 border-t border-white/10 text-center px-6">
+        <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37] font-semibold block mb-2">— THE TALE SO FAR —</span>
+        <h2 className="font-serif text-3xl sm:text-5xl text-white mb-16">A story worth telling.</h2>
+
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="space-y-2">
+            <p className="font-serif text-5xl sm:text-6xl text-[#D4AF37]">
+              <StatCounter end={4.8} decimals={1} /> ★
+            </p>
+            <p className="text-xs uppercase tracking-widest text-gray-400">Google Rating</p>
+          </div>
+          <div className="space-y-2">
+            <p className="font-serif text-5xl sm:text-6xl text-[#D4AF37]">
+              <StatCounter end={410} suffix="+" />
+            </p>
+            <p className="text-xs uppercase tracking-widest text-gray-400">Reviews & Counting</p>
+          </div>
+          <div className="space-y-2">
+            <p className="font-serif text-5xl sm:text-6xl text-[#D4AF37]">
+              <StatCounter end={100} suffix="+" />
+            </p>
+            <p className="text-xs uppercase tracking-widest text-gray-400">Dishes on the Menu</p>
+          </div>
+          <div className="space-y-2">
+            <p className="font-serif text-5xl sm:text-6xl text-[#D4AF37]">∞</p>
+            <p className="text-xs uppercase tracking-widest text-gray-400">Stories Told</p>
+          </div>
+        </div>
+      </section>
+
+      {/* --- FOOTER (Clean, No Portal Links) --- */}
+      <footer id="location" className="bg-[#030408] border-t border-white/10 pt-20 pb-10 px-6 md:px-12 text-center">
+        <div className="max-w-4xl mx-auto space-y-6 mb-12">
           <h2 className="font-serif text-3xl sm:text-5xl text-white">Join us at Raahi</h2>
           <p className="text-[#D3CEC5] text-xs sm:text-sm font-light leading-relaxed">
             Outer Ring Rd, JP Nagar, Bengaluru, Karnataka<br />
             Open Daily: 12:00 PM – 11:30 PM
           </p>
-          <div className="flex justify-center gap-4">
-            <button
-              onClick={() => setIsReservationOpen(true)}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-7 py-3 rounded-full text-[10px] uppercase tracking-widest font-bold shadow-lg hover:opacity-90 transition-all cursor-pointer"
-            >
-              <span>Reserve a Table</span>
-              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-              </svg>
-            </button>
-          </div>
+          <button
+            onClick={() => setIsReservationOpen(true)}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-8 py-3.5 rounded-full text-[10px] uppercase tracking-widest font-bold shadow-lg hover:opacity-90 transition-all cursor-pointer"
+          >
+            <span>Reserve a Table</span>
+          </button>
         </div>
 
         <div className="max-w-7xl mx-auto border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center text-[10px] sm:text-xs text-gray-500 font-mono gap-3">
           <span>© 2026 RAAHI BENGALURU. ALL RIGHTS RESERVED.</span>
           <div className="flex gap-4 sm:gap-6">
-            <Link href="/kds" className="hover:text-[#D4AF37] transition-colors">Staff KDS</Link>
+            <Link href="/gallery" className="hover:text-[#D4AF37] transition-colors">Gallery</Link>
             <button onClick={() => setIsQrModalOpen(true)} className="hover:text-[#D4AF37] transition-colors cursor-pointer bg-transparent border-none">Table QR Menu</button>
-            <Link href="/admin" className="hover:text-[#D4AF37] transition-colors">Owner Portal 🔒</Link>
           </div>
         </div>
       </footer>
 
-      {/* --- FULL SCREEN MENU DRAWER --- */}
+      {/* --- MENU DRAWER --- */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-[100] bg-[#080706]/98 backdrop-blur-2xl flex flex-col justify-between p-6 sm:p-12 overflow-y-auto">
+        <div className="fixed inset-0 z-[100] bg-[#070e22]/98 backdrop-blur-2xl flex flex-col justify-between p-6 sm:p-12 overflow-y-auto">
           <div className="flex justify-between items-center max-w-7xl mx-auto w-full">
-            <div className="flex items-center gap-2">
-              <span className="text-[#D4AF37]">✦</span>
-              <span className="font-serif text-lg tracking-[0.3em] text-white">RAAHI</span>
-            </div>
+            <span className="font-serif text-lg tracking-[0.3em] text-white">RAAHI</span>
             <button onClick={() => setIsMenuOpen(false)} className="text-xs uppercase tracking-[0.25em] text-[#D4AF37] hover:text-white font-semibold cursor-pointer">
               CLOSE [ ✕ ]
             </button>
@@ -277,24 +609,19 @@ export default function RaahiQissaHome() {
 
           <div className="text-center space-y-6 my-auto py-10">
             <div>
-              <Link href="/kds" onClick={() => setIsMenuOpen(false)} className="font-serif italic text-2xl sm:text-4xl text-[#D4AF37] hover:text-white transition-all duration-300 inline-block">
-                Staff KDS Station 👨‍🍳
-              </Link>
-            </div>
-            <div>
-              <button onClick={() => { setIsMenuOpen(false); setIsQrModalOpen(true); }} className="font-serif italic text-2xl sm:text-4xl text-white hover:text-[#D4AF37] transition-all duration-300 cursor-pointer bg-transparent border-none">
-                Table QR Menu ↗
+              <button onClick={() => { setIsMenuOpen(false); setIsQrModalOpen(true); }} className="font-serif italic text-3xl sm:text-5xl text-white hover:text-[#D4AF37] transition-all cursor-pointer bg-transparent border-none">
+                Interactive Menu ↗
               </button>
             </div>
             <div>
-              <Link href="/admin" onClick={() => setIsMenuOpen(false)} className="font-serif italic text-2xl sm:text-4xl text-white hover:text-[#D4AF37] transition-all duration-300 inline-block">
-                Owner Executive Portal 🔒
+              <Link href="/gallery" onClick={() => setIsMenuOpen(false)} className="font-serif italic text-3xl sm:text-5xl text-white hover:text-[#D4AF37] transition-all inline-block">
+                Full Gallery
               </Link>
             </div>
             <div>
-              <a href="#location" onClick={() => setIsMenuOpen(false)} className="font-serif italic text-2xl sm:text-4xl text-white hover:text-[#D4AF37] transition-all duration-300 inline-block">
-                Location & Hours
-              </a>
+              <button onClick={() => { setIsMenuOpen(false); setIsReservationOpen(true); }} className="font-serif italic text-3xl sm:text-5xl text-[#D4AF37] hover:text-white transition-all cursor-pointer bg-transparent border-none">
+                Reserve a Table
+              </button>
             </div>
           </div>
 
@@ -309,9 +636,8 @@ export default function RaahiQissaHome() {
         <div onClick={() => setIsQrModalOpen(false)} className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
           <div onClick={(e) => e.stopPropagation()} className="bg-[#12100E] border border-white/15 rounded-3xl max-w-sm sm:max-w-md w-full p-6 sm:p-8 shadow-2xl relative text-center">
             <button onClick={() => setIsQrModalOpen(false)} className="absolute top-5 right-5 text-gray-400 hover:text-white text-sm font-bold bg-white/5 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer">✕</button>
-            <span className="text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] block mb-1 font-semibold">Table QR Simulation</span>
             <h2 className="font-serif text-2xl sm:text-3xl text-white mb-2">Select Your Table</h2>
-            <p className="text-gray-400 text-xs mb-6">Choose your table number to launch the interactive dining and bar menu.</p>
+            <p className="text-gray-400 text-xs mb-6">Choose your table number to launch the interactive dining menu.</p>
 
             <div className="grid grid-cols-5 gap-2 sm:gap-3 mb-6">
               {["01", "02", "03", "04", "05", "06", "07", "08", "09", "10"].map((tbl) => (
@@ -332,9 +658,6 @@ export default function RaahiQissaHome() {
               className="inline-flex items-center justify-center gap-2 w-full bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-lg text-center"
             >
               <span>Launch Table #{tableNum} Menu</span>
-              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-              </svg>
             </Link>
           </div>
         </div>
