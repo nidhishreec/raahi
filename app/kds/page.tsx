@@ -264,21 +264,34 @@ export default function KdsPage() {
                     </div>
 
                     <div className="pt-4 border-t border-white/10 grid grid-cols-2 gap-2">
-                      {order.status !== "Preparing" && (
-                        <button
-                          onClick={() => updateStatus(order.id, "Preparing")}
-                          className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-500/40 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
-                        >
-                          Start Preparing
-                        </button>
+                      {order.status === "Pending Kitchen" && (
+                        <>
+                          <button
+                            onClick={() => updateStatus(order.id, "Preparing")}
+                            className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-500/40 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                          >
+                            Start Preparing
+                          </button>
+                          <button
+                            onClick={() => updateStatus(order.id, "Served")}
+                            className="bg-green-500/20 hover:bg-green-500/30 text-green-300 border border-green-500/40 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                          >
+                            Mark Served / Ready ✓
+                          </button>
+                        </>
                       )}
-                      {order.status !== "Served" && (
+                      {order.status === "Preparing" && (
                         <button
                           onClick={() => updateStatus(order.id, "Served")}
-                          className={`${order.status === "Preparing" ? "col-span-2" : ""} bg-green-500/20 hover:bg-green-500/30 text-green-300 border border-green-500/40 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer`}
+                          className="col-span-2 bg-green-500/20 hover:bg-green-500/30 text-green-300 border border-green-500/40 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
                         >
                           Mark Served / Ready ✓
                         </button>
+                      )}
+                      {order.status === "Served" && (
+                        <div className="col-span-2 text-center py-2 text-xs text-gray-500 uppercase tracking-widest font-semibold">
+                          Order Completed
+                        </div>
                       )}
                     </div>
                   </div>
