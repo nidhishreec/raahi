@@ -3,7 +3,9 @@ import { supabaseAdmin } from "@/lib/supabase-server";
 import { verifySessionToken } from "@/lib/session";
 
 // PATCH /api/orders/[id] -- staff or owner only.
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
   const staffToken = req.cookies.get("raahi_staff_session")?.value;
   const ownerToken = req.cookies.get("raahi_owner_session")?.value;
   const session =
@@ -22,8 +24,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const { error } = await supabaseAdmin
     .from("orders")
     .update({ status })
-    .eq("id", params.id);
+    .eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ ok: true });
-}
+} 
