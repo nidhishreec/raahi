@@ -48,10 +48,10 @@ const AMBIENCE_COL_2 = [
 ];
 
 // Luxury Cutlery Sunburst Emblem Component
-function RaahiBrandLogo({ compact = false, large = false }: { compact?: boolean; large?: boolean }) {
+function RaahiBrandLogo({ large = false }: { large?: boolean }) {
   return (
     <div className={`flex ${large ? "flex-col items-center gap-4" : "items-center gap-2 sm:gap-3"}`}>
-      <div className={`relative flex items-center justify-center ${compact ? "w-7 h-7 sm:w-8 sm:h-8" : large ? "w-20 h-20" : "w-10 h-10"}`}>
+      <div className={`relative flex items-center justify-center ${large ? "w-20 h-20 sm:w-24 sm:h-24" : "w-9 h-9 sm:w-11 sm:h-11"}`}>
         <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-lg" fill="url(#goldGrad)">
           <defs>
             <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -72,14 +72,12 @@ function RaahiBrandLogo({ compact = false, large = false }: { compact?: boolean;
         </svg>
       </div>
       <div className={`flex flex-col ${large ? "items-center text-center" : "text-left"}`}>
-        <span className={`font-serif tracking-[0.25em] sm:tracking-[0.35em] uppercase text-[#E5C58A] font-normal ${compact ? "text-[10px] sm:text-xs" : large ? "text-4xl sm:text-6xl tracking-[0.45em]" : "text-sm"}`}>
+        <span className={`font-serif tracking-[0.3em] sm:tracking-[0.35em] uppercase text-[#E5C58A] font-normal ${large ? "text-4xl sm:text-6xl tracking-[0.45em]" : "text-xs sm:text-sm"}`}>
           RAAHI
         </span>
-        {!compact && (
-          <span className={`uppercase tracking-[0.25em] text-[#D4AF37]/80 font-light font-sans ${large ? "text-xs tracking-[0.35em] mt-1.5" : "text-[8px]"}`}>
-            A Tale of Food
-          </span>
-        )}
+        <span className={`uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#D4AF37]/80 font-light font-sans ${large ? "text-xs tracking-[0.35em] mt-1.5" : "text-[8px] sm:text-[9px]"}`}>
+          A Tale of Food
+        </span>
       </div>
     </div>
   );
@@ -309,31 +307,28 @@ export default function RaahiHomePage() {
         >
           <div className="flex flex-col items-center text-center px-4 animate-pulse">
             <RaahiBrandLogo large={true} />
-            <div className="w-20 h-[1px] bg-[#D4AF37]/50 my-5"></div>
-            <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37]/80 font-light">
+            <div className="w-24 h-[1px] bg-[#D4AF37]/50 my-6"></div>
+            <span className="text-xs uppercase tracking-[0.4em] text-[#D4AF37]/80 font-light">
               JP Nagar • Bengaluru
             </span>
           </div>
         </div>
       )}
 
-      {/* --- FIXED STICKY TOP NAVBAR (Responsive Flex with Absolute Center Logo) --- */}
-      <nav className="fixed top-0 left-0 w-full z-50 px-3 sm:px-6 md:px-12 py-3 sm:py-4 flex justify-between items-center backdrop-blur-md bg-[#040713]/85 border-b border-white/10 shadow-2xl">
-        <div>
-          <button
-            onClick={() => setIsMenuOpen(true)}
-            className="flex items-center gap-1.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#D4AF37] hover:text-white transition-colors font-medium cursor-pointer"
-          >
-            <span>☰</span> <span className="hidden xs:inline">MENU</span>
-          </button>
+      {/* --- FIXED STICKY TOP NAVBAR (Clean, Responsive Mobile-First Header) --- */}
+      <nav className="fixed top-0 left-0 w-full z-50 px-4 md:px-12 py-3.5 sm:py-4 flex justify-between items-center backdrop-blur-md bg-[#040713]/90 border-b border-white/10 shadow-2xl">
+        <button
+          onClick={() => setIsMenuOpen(true)}
+          className="flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-[#D4AF37] hover:text-white transition-colors font-medium cursor-pointer shrink-0"
+        >
+          <span>☰</span> <span className="hidden xs:inline">MENU</span>
+        </button>
+
+        <div className="cursor-pointer mx-2" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <RaahiBrandLogo />
         </div>
 
-        {/* Absolute Centered Logo for Mobile & Desktop Safety */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 pointer-events-none sm:pointer-events-auto">
-          <RaahiBrandLogo compact={true} />
-        </div>
-
-        <div className="flex items-center justify-end gap-2 sm:gap-5">
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           <Link
             href="/gallery"
             className="hidden md:inline-block text-xs uppercase tracking-[0.2em] text-gray-300 hover:text-[#D4AF37] transition-colors font-medium"
@@ -342,13 +337,13 @@ export default function RaahiHomePage() {
           </Link>
           <button
             onClick={() => setIsQrModalOpen(true)}
-            className="border border-[#D4AF37]/50 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all font-semibold cursor-pointer whitespace-nowrap"
+            className="hidden sm:inline-block border border-[#D4AF37]/50 px-3.5 py-1.5 rounded-full text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all font-semibold cursor-pointer"
           >
             ORDER ↗
           </button>
           <button
             onClick={() => setIsReservationOpen(true)}
-            className="bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] font-bold shadow-lg hover:opacity-90 transition-all cursor-pointer whitespace-nowrap"
+            className="bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] font-bold shadow-lg hover:opacity-90 transition-all cursor-pointer"
           >
             RESERVE ↗
           </button>
