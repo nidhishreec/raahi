@@ -315,20 +315,22 @@ export default function RaahiHomePage() {
         </div>
       )}
 
-      {/* --- FIXED STICKY TOP NAVBAR --- */}
+      {/* --- FIXED STICKY TOP NAVBAR (Perfect Absolute Center Logo & Arrow-Free Buttons) --- */}
       <nav className="fixed top-0 left-0 w-full z-50 px-4 md:px-12 py-3.5 sm:py-4 flex justify-between items-center backdrop-blur-md bg-[#040713]/90 border-b border-white/10 shadow-2xl">
-        <button
-          onClick={() => setIsMenuOpen(true)}
-          className="flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-[#D4AF37] hover:text-white transition-colors font-medium cursor-pointer shrink-0"
-        >
-          <span className="text-2xl leading-none">☰</span> <span className="hidden xs:inline">MENU</span>
-        </button>
+        <div className="flex items-center z-10">
+          <button
+            onClick={() => setIsMenuOpen(true)}
+            className="flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-[#D4AF37] hover:text-white transition-colors font-medium cursor-pointer"
+          >
+            <span className="text-2xl leading-none">☰</span> <span className="hidden xs:inline">MENU</span>
+          </button>
+        </div>
 
-        <div className="cursor-pointer mx-2" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <div className="absolute left-1/2 -translate-x-1/2 cursor-pointer z-10" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <RaahiBrandLogo />
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+        <div className="flex items-center gap-3 sm:gap-5 z-10">
           <Link
             href="/gallery"
             className="hidden md:inline-block text-xs uppercase tracking-[0.2em] text-gray-300 hover:text-[#D4AF37] transition-colors font-medium"
@@ -337,17 +339,15 @@ export default function RaahiHomePage() {
           </Link>
           <button
             onClick={() => setIsQrModalOpen(true)}
-            className="hidden sm:inline-block border border-[#D4AF37]/50 px-3.5 py-1.5 rounded-full text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all font-semibold cursor-pointer flex items-center gap-1.5"
+            className="hidden sm:inline-block border border-[#D4AF37]/50 px-4 py-1.5 rounded-full text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all font-semibold cursor-pointer"
           >
-            <span>ORDER</span>
-            <svg className="w-3 h-3 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            ORDER
           </button>
           <button
             onClick={() => setIsReservationOpen(true)}
-            className="bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] font-bold shadow-lg hover:opacity-90 transition-all cursor-pointer flex items-center gap-1.5"
+            className="bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-[10px] uppercase tracking-[0.2em] font-bold shadow-lg hover:opacity-90 transition-all cursor-pointer"
           >
-            <span>RESERVE</span>
-            <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            RESERVE
           </button>
         </div>
       </nav>
