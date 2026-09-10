@@ -315,13 +315,13 @@ export default function RaahiHomePage() {
         </div>
       )}
 
-      {/* --- FIXED STICKY TOP NAVBAR (Clean, Responsive Mobile-First Header) --- */}
+      {/* --- FIXED STICKY TOP NAVBAR --- */}
       <nav className="fixed top-0 left-0 w-full z-50 px-4 md:px-12 py-3.5 sm:py-4 flex justify-between items-center backdrop-blur-md bg-[#040713]/90 border-b border-white/10 shadow-2xl">
         <button
           onClick={() => setIsMenuOpen(true)}
           className="flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-[#D4AF37] hover:text-white transition-colors font-medium cursor-pointer shrink-0"
         >
-          <span>☰</span> <span className="hidden xs:inline">MENU</span>
+          <span className="text-2xl leading-none">☰</span> <span className="hidden xs:inline">MENU</span>
         </button>
 
         <div className="cursor-pointer mx-2" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
@@ -337,15 +337,17 @@ export default function RaahiHomePage() {
           </Link>
           <button
             onClick={() => setIsQrModalOpen(true)}
-            className="hidden sm:inline-block border border-[#D4AF37]/50 px-3.5 py-1.5 rounded-full text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all font-semibold cursor-pointer"
+            className="hidden sm:inline-block border border-[#D4AF37]/50 px-3.5 py-1.5 rounded-full text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all font-semibold cursor-pointer flex items-center gap-1.5"
           >
-            ORDER ↗
+            <span>ORDER</span>
+            <svg className="w-3 h-3 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </button>
           <button
             onClick={() => setIsReservationOpen(true)}
-            className="bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] font-bold shadow-lg hover:opacity-90 transition-all cursor-pointer"
+            className="bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.2em] font-bold shadow-lg hover:opacity-90 transition-all cursor-pointer flex items-center gap-1.5"
           >
-            RESERVE ↗
+            <span>RESERVE</span>
+            <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </button>
         </div>
       </nav>
