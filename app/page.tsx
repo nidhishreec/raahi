@@ -47,7 +47,6 @@ const AMBIENCE_COL_2 = [
   "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80"
 ];
 
-// Luxury Cutlery Sunburst Emblem Component
 function RaahiBrandLogo({ large = false }: { large?: boolean }) {
   return (
     <div className={`flex ${large ? "flex-col items-center gap-4" : "items-center gap-2 sm:gap-3"}`}>
@@ -315,7 +314,7 @@ export default function RaahiHomePage() {
         </div>
       )}
 
-      {/* --- FIXED STICKY TOP NAVBAR --- */}
+      {/* --- TOP NAVBAR --- */}
       <nav className="fixed top-0 left-0 w-full z-50 px-4 md:px-12 py-3.5 sm:py-4 flex justify-between items-center backdrop-blur-md bg-[#040713]/90 border-b border-white/10 shadow-2xl">
         <div className="flex items-center z-10">
           <button
@@ -678,7 +677,6 @@ export default function RaahiHomePage() {
                 <input required name="name" type="text" placeholder="Your Full Name" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
                 <input required name="phone" type="tel" placeholder="Phone Number" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
                 
-                {/* Fixed Date & Time inputs with min-w-0 and 16px font-size to prevent iOS Safari zoom/overflow bugs */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full box-border">
                   <div className="min-w-0 w-full overflow-hidden">
                     <input required name="date" type="date" min={new Date().toISOString().split("T")[0]} className="w-full max-w-full box-border min-w-0 bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-base sm:text-xs text-white outline-none focus:border-[#D4AF37] [color-scheme:dark]" />
