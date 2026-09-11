@@ -666,8 +666,8 @@ export default function RaahiHomePage() {
       {/* --- RESERVATION MODAL --- */}
       {isReservationOpen && (
         <div className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-sm sm:max-w-md bg-[#141210] border border-[#D4AF37]/30 rounded-2xl p-6 sm:p-8 relative shadow-2xl">
-            <button onClick={() => setIsReservationOpen(false)} className="absolute top-5 right-5 text-gray-400 hover:text-white text-xs cursor-pointer">✕</button>
+          <div className="w-full max-w-sm sm:max-w-md bg-[#141210] border border-[#D4AF37]/30 rounded-2xl p-5 sm:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button onClick={() => setIsReservationOpen(false)} className="absolute top-5 right-5 text-gray-400 hover:text-white text-sm font-bold bg-white/5 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer">✕</button>
             <h3 className="font-serif text-2xl text-white mb-2">Reserve a Table</h3>
             <p className="text-[#B5B0A6] text-xs mb-6">Experience an unforgettable evening at Raahi.</p>
 
@@ -676,7 +676,7 @@ export default function RaahiHomePage() {
                 ✓ Table reserved successfully! We'll see you soon.
               </div>
             ) : (
-              <form onSubmit={handleReservationSubmit} className="space-y-3.5">
+              <form onSubmit={handleReservationSubmit} className="space-y-3">
                 <input required name="name" type="text" placeholder="Your Full Name" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
                 <input required name="phone" type="tel" placeholder="Phone Number" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
