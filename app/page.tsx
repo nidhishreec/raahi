@@ -679,9 +679,9 @@ export default function RaahiHomePage() {
               <form onSubmit={handleReservationSubmit} className="space-y-3.5">
                 <input required name="name" type="text" placeholder="Your Full Name" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
                 <input required name="phone" type="tel" placeholder="Phone Number" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
-                <div className="grid grid-cols-2 gap-3">
-                  <input required name="date" type="date" min={new Date().toISOString().split("T")[0]} className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
-                  <input required name="time" type="time" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <input required name="date" type="date" min={new Date().toISOString().split("T")[0]} className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37] [color-scheme:dark]" />
+                  <input required name="time" type="time" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37] [color-scheme:dark]" />
                 </div>
                 {reservationError && (
                   <p className="text-red-400 text-xs bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-2.5">{reservationError}</p>
