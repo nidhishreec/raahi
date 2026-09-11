@@ -258,63 +258,6 @@ export default function RaahiHomePage() {
         .font-serif { font-family: 'Cormorant Garamond', serif; }
         .font-sans { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-        /* iOS Safari: force native date/time controls to respect the modal width. */
-        input[type="date"].reservation-date,
-        input[type="time"].reservation-time {
-          display: block;
-          width: 100%;
-          min-width: 0;
-          max-width: 100%;
-          box-sizing: border-box;
-          -webkit-box-sizing: border-box;
-          -webkit-appearance: none;
-          appearance: none;
-          overflow: hidden;
-          line-height: 1.25;
-          color: #F4F0EA;
-          background-color: #1F1C18;
-        }
-
-        input[type="date"].reservation-date::-webkit-date-and-time-value,
-        input[type="time"].reservation-time::-webkit-date-and-time-value {
-          min-height: 1.25em;
-          text-align: left;
-        }
-
-        input[type="date"].reservation-date::-webkit-datetime-edit,
-        input[type="time"].reservation-time::-webkit-datetime-edit {
-          display: inline-flex;
-          min-width: 0;
-          padding: 0;
-        }
-
-        input[type="date"].reservation-date::-webkit-datetime-edit-fields-wrapper,
-        input[type="time"].reservation-time::-webkit-datetime-edit-fields-wrapper {
-          padding: 0;
-          min-width: 0;
-        }
-
-        .reservation-field {
-          min-width: 0;
-          width: 100%;
-          max-width: 100%;
-        }
-
-        @media (max-width: 639px) {
-          .reservation-modal {
-            width: 100%;
-            max-width: 24rem;
-            max-height: calc(100dvh - 2rem);
-            overflow-y: auto;
-          }
-
-          .reservation-form {
-            width: 100%;
-            min-width: 0;
-          }
-        }
-
-
         @keyframes plateSlide {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
@@ -721,7 +664,7 @@ export default function RaahiHomePage() {
       {/* --- RESERVATION MODAL --- */}
       {isReservationOpen && (
         <div className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="reservation-modal w-full max-w-sm sm:max-w-md bg-[#141210] border border-[#D4AF37]/30 rounded-2xl p-5 sm:p-8 relative shadow-2xl">
+          <div className="w-full max-w-sm sm:max-w-md bg-[#141210] border border-[#D4AF37]/30 rounded-2xl p-5 sm:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto">
             <button onClick={() => setIsReservationOpen(false)} className="absolute top-5 right-5 text-gray-400 hover:text-white text-sm font-bold bg-white/5 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer">✕</button>
             <h3 className="font-serif text-2xl text-white mb-2">Reserve a Table</h3>
             <p className="text-[#B5B0A6] text-xs mb-6">Experience an unforgettable evening at Raahi.</p>
@@ -731,39 +674,17 @@ export default function RaahiHomePage() {
                 ✓ Table reserved successfully! We'll see you soon.
               </div>
             ) : (
-              <form onSubmit={handleReservationSubmit} className="reservation-form space-y-3">
+              <form onSubmit={handleReservationSubmit} className="space-y-3">
                 <input required name="name" type="text" placeholder="Your Full Name" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
                 <input required name="phone" type="tel" placeholder="Phone Number" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
                 
-                {/* Date & Time — stacked on mobile to prevent iOS Safari overflow.
-                    Visible labels are used because empty native date/time inputs
-                    do not reliably show a placeholder on iPhone Safari. */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full min-w-0">
-                  <div className="reservation-field">
-                    <label htmlFor="reservation-date" className="block text-[10px] uppercase tracking-[0.18em] text-[#B5B0A6] mb-2">
-                      Date
-                    </label>
-                    <input
-                      id="reservation-date"
-                      required
-                      name="date"
-                      type="date"
-                      min={new Date().toISOString().split("T")[0]}
-                      className="reservation-date w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-base text-white outline-none focus:border-[#D4AF37]"
-                    />
+                {/* Fixed Date & Time inputs with min-w-0 and 16px font-size to prevent iOS Safari zoom/overflow bugs */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full box-border">
+                  <div className="min-w-0 w-full overflow-hidden">
+                    <input required name="date" type="date" min={new Date().toISOString().split("T")[0]} className="w-full max-w-full box-border min-w-0 bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-base sm:text-xs text-white outline-none focus:border-[#D4AF37] [color-scheme:dark]" />
                   </div>
-
-                  <div className="reservation-field">
-                    <label htmlFor="reservation-time" className="block text-[10px] uppercase tracking-[0.18em] text-[#B5B0A6] mb-2">
-                      Time
-                    </label>
-                    <input
-                      id="reservation-time"
-                      required
-                      name="time"
-                      type="time"
-                      className="reservation-time w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-base text-white outline-none focus:border-[#D4AF37]"
-                    />
+                  <div className="min-w-0 w-full overflow-hidden">
+                    <input required name="time" type="time" className="w-full max-w-full box-border min-w-0 bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-base sm:text-xs text-white outline-none focus:border-[#D4AF37] [color-scheme:dark]" />
                   </div>
                 </div>
 
