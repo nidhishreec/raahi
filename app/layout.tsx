@@ -15,6 +15,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Raahi — A Tale of Food",
   description: "Celebrating the flavors of India in JP Nagar, Bengaluru",
+  openGraph: {
+    title: "Raahi — A Tale of Food",
+    description: "Celebrating the flavors of India in JP Nagar, Bengaluru",
+    url: "https://raahi-jade.vercel.app",
+    siteName: "Raahi Bengaluru",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
