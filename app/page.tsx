@@ -673,15 +673,17 @@ export default function RaahiHomePage() {
                 ✓ Table reserved successfully! We'll see you soon.
               </div>
             ) : (
-              <form onSubmit={handleReservationSubmit} className="space-y-3">
+              <form onSubmit={handleReservationSubmit} className="space-y-4">
                 <input required name="name" type="text" placeholder="Your Full Name" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
                 <input required name="phone" type="tel" placeholder="Phone Number" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full box-border">
-                  <div className="min-w-0 w-full overflow-hidden">
+                  <div className="min-w-0 w-full overflow-hidden space-y-1.5 text-left">
+                    <label className="block text-[10px] uppercase tracking-wider text-[#D4AF37] font-medium">Select Date</label>
                     <input required name="date" type="date" min={new Date().toISOString().split("T")[0]} className="w-full max-w-full box-border min-w-0 bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-base sm:text-xs text-white outline-none focus:border-[#D4AF37] [color-scheme:dark]" />
                   </div>
-                  <div className="min-w-0 w-full overflow-hidden">
+                  <div className="min-w-0 w-full overflow-hidden space-y-1.5 text-left">
+                    <label className="block text-[10px] uppercase tracking-wider text-[#D4AF37] font-medium">Select Time</label>
                     <input required name="time" type="time" className="w-full max-w-full box-border min-w-0 bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-base sm:text-xs text-white outline-none focus:border-[#D4AF37] [color-scheme:dark]" />
                   </div>
                 </div>
