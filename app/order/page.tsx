@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { MENU_CATEGORIES } from "@/lib/constants";
-import type { MenuItem, Order } from "@/lib/types";
+import type { MenuItem, Order, BillRequest } from "@/lib/types";
 
 function OrderContent() {
   const searchParams = useSearchParams();
@@ -25,8 +25,11 @@ function OrderContent() {
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [showMobileCartModal, setShowMobileCartModal] = useState(false);
 
-  // Menu now comes from Supabase via the API, and reflects live
-  // stock status -- items staff mark out of stock disappear here.
+  // Bill request state -- tracks whether this table already has a
+  // pending "please bring the bill" request.
+  const [pendingBillRequest, setPendingBillRequest] = useState<BillRequest | null>(null);
+  const [requestingBill, setRequestingBill] = useState(false);
+
   useEffect(() => {
     fetch("/api/menu")
       .then((res) => res.json())
@@ -62,6 +65,50 @@ function OrderContent() {
     };
   }, [tableNum]);
 
+  // Check for (and live-update) this table's bill request status --
+  // covers both the button click and someone refreshing mid-request,
+  // and clears automatically once staff mark it resolved.
+  useEffect(() => {
+    const fetchBillRequest = async () => {
+      const { data } = await supabase
+        .from("bill_requests")
+        .select("*")
+        .eq("table_num", tableNum)
+        .eq("status", "Requested")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      setPendingBillRequest((data as BillRequest) || null);
+    };
+
+    fetchBillRequest();
+
+    const channel = supabase
+      .channel(`table-${tableNum}-bill-requests`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "bill_requests", filter: `table_num=eq.${tableNum}` },
+        () => fetchBillRequest()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [tableNum]);
+
+  const handleRequestBill = async () => {
+    setRequestingBill(true);
+    const res = await fetch("/api/bill-requests", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ table_num: tableNum }),
+    });
+    const data = await res.json();
+    setRequestingBill(false);
+    if (res.ok) setPendingBillRequest(data.request);
+  };
+
   const updateQuantity = (itemId: number, delta: number) => {
     setCart((prev) => {
       const current = prev[itemId] || 0;
@@ -84,10 +131,6 @@ function OrderContent() {
 
   const totalItemCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
 
-  // This is the key change: we send only { id, qty } pairs, never
-  // price or total. The server looks up the real price from the
-  // menu_items table and computes the total itself, so a tampered
-  // client can no longer submit a fake discount.
   const handlePlaceOrder = async () => {
     const itemsArray = Object.entries(cart).map(([id, qty]) => ({
       id: Number(id),
@@ -354,6 +397,33 @@ function OrderContent() {
                 <span className="font-serif text-2xl text-[#D4AF37]">₹{cumulativeBill}</span>
               </div>
             </div>
+
+            {/* --- REQUEST BILL --- */}
+            {tableOrders.length > 0 && (
+              <div className="bg-[#12100E] border border-[#D4AF37]/30 rounded-2xl p-6 shadow-xl">
+                {pendingBillRequest ? (
+                  <div className="text-center">
+                    <div className="text-2xl mb-2">🔔</div>
+                    <p className="text-[#D4AF37] font-serif text-lg mb-1">Bill requested</p>
+                    <p className="text-gray-400 text-xs">A staff member has been notified and will be with you shortly.</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                      <p className="text-white font-serif text-lg">Ready to pay?</p>
+                      <p className="text-gray-400 text-xs mt-1">Tap below and a staff member will bring your bill.</p>
+                    </div>
+                    <button
+                      onClick={handleRequestBill}
+                      disabled={requestingBill}
+                      className="w-full sm:w-auto bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black px-7 py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-all cursor-pointer shadow-lg disabled:opacity-50 whitespace-nowrap"
+                    >
+                      {requestingBill ? "Requesting..." : "🔔 Request Bill"}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
 
             {tableOrders.length === 0 ? (
               <div className="bg-[#12100E] border border-white/10 rounded-2xl p-16 text-center text-gray-400 text-sm">

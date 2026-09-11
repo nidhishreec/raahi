@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import type { Order } from "@/lib/types";
+import type { Order, BillRequest } from "@/lib/types";
 
 export default function RaahiAdminDashboard() {
   const [checkingSession, setCheckingSession] = useState(true);
@@ -19,8 +19,8 @@ export default function RaahiAdminDashboard() {
   const [paymentMethod, setPaymentMethod] = useState<"UPI" | "Card" | "Cash">("UPI");
   const [checkoutInProgress, setCheckoutInProgress] = useState(false);
 
-  // On load, check for an existing valid owner session cookie so a
-  // refresh doesn't force a re-login every time.
+  const [billRequests, setBillRequests] = useState<BillRequest[]>([]);
+
   useEffect(() => {
     fetch("/api/auth/session")
       .then((res) => res.json())
@@ -57,8 +57,6 @@ export default function RaahiAdminDashboard() {
     setIsAuthenticated(false);
   };
 
-  // Reads still go direct via Supabase (RLS allows public SELECT on
-  // orders) -- only writes go through the authenticated API.
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -79,6 +77,36 @@ export default function RaahiAdminDashboard() {
       supabase.removeChannel(orderChannel);
     };
   }, [isAuthenticated]);
+
+  // Live bill-request banner, same pattern as /kds.
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const fetchBillRequests = async () => {
+      const { data } = await supabase
+        .from("bill_requests")
+        .select("*")
+        .eq("status", "Requested")
+        .order("created_at", { ascending: true });
+      setBillRequests((data as BillRequest[]) || []);
+    };
+
+    fetchBillRequests();
+
+    const channel = supabase
+      .channel("admin-bill-requests")
+      .on("postgres_changes", { event: "*", schema: "public", table: "bill_requests" }, () => fetchBillRequests())
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isAuthenticated]);
+
+  const acknowledgeBillRequest = async (id: string) => {
+    const res = await fetch(`/api/bill-requests/${id}`, { method: "PATCH" });
+    if (res.ok) setBillRequests((prev) => prev.filter((r) => r.id !== id));
+  };
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     const res = await fetch(`/api/orders/${orderId}`, {
@@ -109,6 +137,14 @@ export default function RaahiAdminDashboard() {
         })
       )
     );
+
+    // Settling the bill also resolves that table's pending bill
+    // request, if any -- staff don't need a separate step for this.
+    const requestToResolve = billRequests.find((r) => r.table_num === tableNum);
+    if (requestToResolve) {
+      await fetch(`/api/bill-requests/${requestToResolve.id}`, { method: "PATCH" });
+      setBillRequests((prev) => prev.filter((r) => r.id !== requestToResolve.id));
+    }
 
     setCheckoutInProgress(false);
 
@@ -246,6 +282,42 @@ export default function RaahiAdminDashboard() {
         </div>
       </div>
 
+      {/* --- BILL REQUEST BANNER --- */}
+      {billRequests.length > 0 && (
+        <div className="max-w-7xl mx-auto mb-8 space-y-2">
+          {billRequests.map((req) => (
+            <div
+              key={req.id}
+              className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#D4AF37]/10 border border-[#D4AF37]/40 rounded-2xl px-5 py-4"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-xl">🔔</span>
+                <div>
+                  <p className="text-[#D4AF37] font-bold text-sm">Table #{req.table_num} requested the bill</p>
+                  <p className="text-gray-400 text-[10px] uppercase tracking-widest">
+                    {new Date(req.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCheckoutTable(req.table_num)}
+                  className="bg-[#D4AF37] text-black px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-all cursor-pointer whitespace-nowrap"
+                >
+                  Checkout Now →
+                </button>
+                <button
+                  onClick={() => acknowledgeBillRequest(req.id)}
+                  className="border border-white/10 text-gray-300 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-white/5 transition-all cursor-pointer whitespace-nowrap"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto mb-6">
         <h3 className="text-xs uppercase tracking-widest text-[#D4AF37] mb-3">Executive Revenue & Timeframe Earnings</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -296,17 +368,20 @@ export default function RaahiAdminDashboard() {
         <div className="flex gap-3 overflow-x-auto pb-2">
           {["01", "02", "03", "04", "05", "06", "07", "08", "09", "10"].map((tbl) => {
             const hasActiveTable = activeTableOrders.some((o) => o.table_num === tbl);
+            const hasBillRequest = billRequests.some((r) => r.table_num === tbl);
             return (
               <div
                 key={tbl}
-                onClick={() => hasActiveTable && setCheckoutTable(tbl)}
+                onClick={() => (hasActiveTable || hasBillRequest) && setCheckoutTable(tbl)}
                 className={`px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest border whitespace-nowrap transition-all ${
-                  hasActiveTable
+                  hasBillRequest
+                    ? "bg-red-500/20 border-red-500 text-red-300 animate-pulse cursor-pointer hover:bg-red-500/30"
+                    : hasActiveTable
                     ? "bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37] animate-pulse cursor-pointer hover:bg-[#D4AF37]/30"
                     : "bg-white/5 border-white/10 text-gray-500 cursor-default"
                 }`}
               >
-                Table #{tbl} {hasActiveTable ? "• Checkout Bill ↗" : "• Free"}
+                Table #{tbl} {hasBillRequest ? "• 🔔 Bill Requested ↗" : hasActiveTable ? "• Checkout Bill ↗" : "• Free"}
               </div>
             );
           })}
@@ -464,6 +539,9 @@ export default function RaahiAdminDashboard() {
                   ))}
                 </div>
               ))}
+              {tableCheckoutOrders.length === 0 && (
+                <p className="text-gray-500 text-xs text-center py-6">No active orders for this table right now.</p>
+              )}
             </div>
 
             <div className="space-y-4 pt-2 border-t border-white/10">
@@ -497,7 +575,7 @@ export default function RaahiAdminDashboard() {
                 </button>
                 <button
                   onClick={() => handleCheckoutTable(checkoutTable)}
-                  disabled={checkoutInProgress}
+                  disabled={checkoutInProgress || tableCheckoutOrders.length === 0}
                   className="flex-1 bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black py-3.5 rounded-xl text-xs uppercase tracking-widest font-bold hover:opacity-90 cursor-pointer shadow-lg disabled:opacity-50"
                 >
                   {checkoutInProgress ? "Settling..." : "Settle & Free Table Status"}

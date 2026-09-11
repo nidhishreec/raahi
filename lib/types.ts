@@ -29,3 +29,11 @@ export interface Order {
   status: OrderStatus;
   created_at: string;
 }
+
+export interface BillRequest {
+  id: string;
+  table_num: string;
+  status: "Requested" | "Resolved";
+  created_at: string;
+  resolved_at: string | null;
+}

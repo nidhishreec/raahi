@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { MENU_CATEGORIES } from "@/lib/constants";
-import type { Order, MenuItem } from "@/lib/types";
+import type { Order, MenuItem, BillRequest } from "@/lib/types";
 
 export default function KdsPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -18,9 +18,13 @@ export default function KdsPage() {
   const [staffCategory, setStaffCategory] = useState("All");
   const [staffSearch, setStaffSearch] = useState("");
 
-  // Live orders: reading is still allowed by RLS for the anon key,
-  // only writes are gated -- so this stays a direct Supabase read +
-  // realtime subscription, same as before.
+  const [billRequests, setBillRequests] = useState<BillRequest[]>([]);
+
+  // --- Checkout state (new -- mirrors /admin) ---
+  const [checkoutTable, setCheckoutTable] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<"UPI" | "Card" | "Cash">("UPI");
+  const [checkoutInProgress, setCheckoutInProgress] = useState(false);
+
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
@@ -65,7 +69,35 @@ export default function KdsPage() {
     };
   }, []);
 
-  // Menu now comes from the API (backed by Supabase), not a hardcoded array.
+  useEffect(() => {
+    const fetchBillRequests = async () => {
+      const { data } = await supabase
+        .from("bill_requests")
+        .select("*")
+        .eq("status", "Requested")
+        .order("created_at", { ascending: true });
+      setBillRequests((data as BillRequest[]) || []);
+    };
+
+    fetchBillRequests();
+
+    const channel = supabase
+      .channel("kds-bill-requests")
+      .on("postgres_changes", { event: "*", schema: "public", table: "bill_requests" }, () => fetchBillRequests())
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const acknowledgeBillRequest = async (id: string) => {
+    const res = await fetch(`/api/bill-requests/${id}`, { method: "PATCH" });
+    if (res.ok) {
+      setBillRequests((prev) => prev.filter((r) => r.id !== id));
+    }
+  };
+
   useEffect(() => {
     fetch("/api/menu")
       .then((res) => res.json())
@@ -73,9 +105,6 @@ export default function KdsPage() {
       .catch((err) => console.error("Error fetching menu:", err));
   }, []);
 
-  // Status updates now go through the authenticated API route instead
-  // of a direct client-side Supabase write -- this is what actually
-  // stops an unauthenticated visitor from moving the kitchen queue.
   const updateStatus = async (orderId: string, newStatus: string) => {
     const res = await fetch(`/api/orders/${orderId}`, {
       method: "PATCH",
@@ -91,13 +120,11 @@ export default function KdsPage() {
     }
   };
 
-  // Stock toggle now persists to Supabase via the authenticated API
-  // route, instead of only updating local React state.
   const toggleAvailability = async (item: MenuItem) => {
     const nextAvailable = !item.is_available;
     setMenuItems((prev) =>
       prev.map((m) => (m.id === item.id ? { ...m, is_available: nextAvailable } : m))
-    ); // optimistic update
+    );
 
     const res = await fetch("/api/menu", {
       method: "PATCH",
@@ -106,13 +133,47 @@ export default function KdsPage() {
     });
 
     if (!res.ok) {
-      // revert on failure
       setMenuItems((prev) =>
         prev.map((m) => (m.id === item.id ? { ...m, is_available: item.is_available } : m))
       );
       const data = await res.json();
       alert(data.error || "Failed to update stock status.");
     }
+  };
+
+  // --- Checkout logic (new -- same pattern as /admin) ---
+  const handleCheckoutTable = async (tableNum: string) => {
+    setCheckoutInProgress(true);
+    const ordersToSettle = orders.filter((o) => o.table_num === tableNum);
+
+    const results = await Promise.all(
+      ordersToSettle.map((o) =>
+        fetch(`/api/orders/${o.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: `Paid via ${paymentMethod}` }),
+        })
+      )
+    );
+
+    const requestToResolve = billRequests.find((r) => r.table_num === tableNum);
+    if (requestToResolve) {
+      await fetch(`/api/bill-requests/${requestToResolve.id}`, { method: "PATCH" });
+      setBillRequests((prev) => prev.filter((r) => r.id !== requestToResolve.id));
+    }
+
+    setCheckoutInProgress(false);
+
+    if (results.some((r) => !r.ok)) {
+      alert("Some items failed to settle. Please check the table again.");
+      return;
+    }
+
+    setCheckoutTable(null);
+    // Realtime UPDATE handler above already removes settled orders
+    // from `orders` once Supabase confirms the status change, but we
+    // clear them locally too so the UI doesn't wait on the roundtrip.
+    setOrders((prev) => prev.filter((o) => o.table_num !== tableNum));
   };
 
   const handleLogout = async () => {
@@ -132,6 +193,13 @@ export default function KdsPage() {
       staffSearch.trim() === "" || item.name.toLowerCase().includes(staffSearch.toLowerCase());
     return matchesCat && matchesSearch;
   });
+
+  // --- Checkout modal data (new) ---
+  const tableCheckoutOrders = checkoutTable ? orders.filter((o) => o.table_num === checkoutTable) : [];
+  const tableCheckoutTotal = tableCheckoutOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+
+  // Distinct table numbers currently active, for the quick-checkout strip
+  const activeTableNums = Array.from(new Set(orders.map((o) => o.table_num))).sort();
 
   return (
     <main className="bg-[#06080C] text-[#F4F0EA] min-h-screen font-sans p-4 sm:p-8">
@@ -161,6 +229,70 @@ export default function KdsPage() {
           </button>
         </div>
       </header>
+
+      {/* --- BILL REQUEST BANNER (now with direct Checkout, not just Acknowledge) --- */}
+      {billRequests.length > 0 && (
+        <div className="mb-8 space-y-2">
+          {billRequests.map((req) => (
+            <div
+              key={req.id}
+              className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#D4AF37]/10 border border-[#D4AF37]/40 rounded-2xl px-5 py-4"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-xl">🔔</span>
+                <div>
+                  <p className="text-[#D4AF37] font-bold text-sm">
+                    Table #{req.table_num} requested the bill
+                  </p>
+                  <p className="text-gray-400 text-[10px] uppercase tracking-widest">
+                    {new Date(req.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCheckoutTable(req.table_num)}
+                  className="bg-[#D4AF37] text-black px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-all cursor-pointer whitespace-nowrap"
+                >
+                  Checkout Now →
+                </button>
+                <button
+                  onClick={() => acknowledgeBillRequest(req.id)}
+                  className="border border-white/10 text-gray-300 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-white/5 transition-all cursor-pointer whitespace-nowrap"
+                >
+                  On It ✓
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* --- QUICK CHECKOUT STRIP (new -- same idea as /admin's table grid,
+          but only lists tables that actually have active orders right now) --- */}
+      {activeTableNums.length > 0 && (
+        <div className="mb-8">
+          <h3 className="text-xs uppercase tracking-widest text-[#D4AF37] mb-3">Quick Checkout</h3>
+          <div className="flex gap-3 overflow-x-auto pb-2">
+            {activeTableNums.map((tbl) => {
+              const hasBillRequest = billRequests.some((r) => r.table_num === tbl);
+              return (
+                <button
+                  key={tbl}
+                  onClick={() => setCheckoutTable(tbl)}
+                  className={`px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest border whitespace-nowrap transition-all cursor-pointer ${
+                    hasBillRequest
+                      ? "bg-red-500/20 border-red-500 text-red-300 animate-pulse hover:bg-red-500/30"
+                      : "bg-[#D4AF37]/10 border-[#D4AF37]/40 text-[#D4AF37] hover:bg-[#D4AF37]/20"
+                  }`}
+                >
+                  Table #{tbl} {hasBillRequest ? "• 🔔 Bill Requested" : "• Checkout ↗"}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="flex gap-4 mb-8 border-b border-white/10 pb-4">
         <button
@@ -263,9 +395,9 @@ export default function KdsPage() {
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-white/10 grid grid-cols-2 gap-2">
+                    <div className="pt-4 border-t border-white/10">
                       {order.status === "Pending Kitchen" && (
-                        <>
+                        <div className="grid grid-cols-2 gap-2">
                           <button
                             onClick={() => updateStatus(order.id, "Preparing")}
                             className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-500/40 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
@@ -278,20 +410,25 @@ export default function KdsPage() {
                           >
                             Mark Served / Ready ✓
                           </button>
-                        </>
+                        </div>
                       )}
+
                       {order.status === "Preparing" && (
                         <button
                           onClick={() => updateStatus(order.id, "Served")}
-                          className="col-span-2 bg-green-500/20 hover:bg-green-500/30 text-green-300 border border-green-500/40 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                          className="w-full bg-green-500/20 hover:bg-green-500/30 text-green-300 border border-green-500/40 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
                         >
                           Mark Served / Ready ✓
                         </button>
                       )}
+
                       {order.status === "Served" && (
-                        <div className="col-span-2 text-center py-2 text-xs text-gray-500 uppercase tracking-widest font-semibold">
-                          Order Completed
-                        </div>
+                        <button
+                          onClick={() => setCheckoutTable(order.table_num)}
+                          className="w-full bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                        >
+                          ✓ Served — Checkout Table →
+                        </button>
                       )}
                     </div>
                   </div>
@@ -372,6 +509,94 @@ export default function KdsPage() {
                 </button>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* --- CHECKOUT MODAL (new -- mirrors /admin's) --- */}
+      {checkoutTable && (
+        <div
+          onClick={() => setCheckoutTable(null)}
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[#12100E] border border-white/15 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative"
+          >
+            <div className="flex justify-between items-center pb-4 mb-4 border-b border-white/10">
+              <div>
+                <span className="text-xs text-[#D4AF37] uppercase tracking-widest font-semibold">Bill Settlement</span>
+                <h2 className="font-serif text-2xl text-white">Table #{checkoutTable} Checkout</h2>
+              </div>
+              <button
+                onClick={() => setCheckoutTable(null)}
+                className="text-gray-400 hover:text-white text-lg font-bold cursor-pointer bg-white/5 p-2 rounded-full w-9 h-9 flex items-center justify-center"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="max-h-48 overflow-y-auto space-y-3 pr-2 mb-4">
+              {tableCheckoutOrders.map((order, idx) => (
+                <div key={order.id} className="bg-[#1F1C18] p-4 rounded-xl border border-white/5">
+                  <div className="flex justify-between text-xs text-gray-400 mb-2">
+                    <span>Round #{idx + 1} ({order.status})</span>
+                    <span>₹{order.total}</span>
+                  </div>
+                  {order.items?.map((item, i: number) => (
+                    <div key={i} className="flex justify-between text-sm text-white py-0.5">
+                      <span>{item.qty}x {item.name}</span>
+                      <span className="text-gray-400">₹{item.price * item.qty}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+              {tableCheckoutOrders.length === 0 && (
+                <p className="text-gray-500 text-xs text-center py-6">No active orders for this table right now.</p>
+              )}
+            </div>
+
+            <div className="space-y-4 pt-2 border-t border-white/10">
+              <div className="bg-[#1F1C18] p-4 rounded-2xl border border-white/10 flex justify-between items-center">
+                <span className="text-xs uppercase tracking-widest text-gray-300 font-bold">Grand Total Due</span>
+                <span className="font-serif text-2xl text-[#D4AF37]">₹{tableCheckoutTotal}</span>
+              </div>
+
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-400 mb-2">Select Payment Method</label>
+                <div className="grid grid-cols-3 gap-3">
+                  {(["UPI", "Card", "Cash"] as const).map((method) => (
+                    <button
+                      key={method}
+                      onClick={() => setPaymentMethod(method)}
+                      className={`py-3 rounded-xl text-xs font-bold uppercase tracking-widest border transition-all cursor-pointer ${
+                        paymentMethod === method
+                          ? "bg-[#D4AF37] border-[#D4AF37] text-black shadow-lg"
+                          : "bg-white/5 border-white/10 text-gray-300 hover:bg-white/10"
+                      }`}
+                    >
+                      {method}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => setCheckoutTable(null)}
+                  className="flex-1 border border-white/10 text-gray-300 py-3.5 rounded-xl text-xs uppercase tracking-widest font-bold hover:bg-white/5 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleCheckoutTable(checkoutTable)}
+                  disabled={checkoutInProgress || tableCheckoutOrders.length === 0}
+                  className="flex-1 bg-gradient-to-r from-[#D4AF37] via-[#E6C567] to-[#AA7C11] text-black py-3.5 rounded-xl text-xs uppercase tracking-widest font-bold hover:opacity-90 cursor-pointer shadow-lg disabled:opacity-50"
+                >
+                  {checkoutInProgress ? "Settling..." : "Settle & Free Table Status"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
