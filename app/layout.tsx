@@ -20,6 +20,14 @@ export const metadata: Metadata = {
     description: "Celebrating the flavors of India in JP Nagar, Bengaluru",
     url: "https://raahi-jade.vercel.app",
     siteName: "Raahi Bengaluru",
+    images: [
+      {
+        url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&h=630&q=80",
+        width: 1200,
+        height: 630,
+        alt: "Raahi Bengaluru Dining Atmosphere",
+      },
+    ],
     locale: "en_IN",
     type: "website",
   },

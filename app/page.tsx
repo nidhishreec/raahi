@@ -315,7 +315,7 @@ export default function RaahiHomePage() {
         </div>
       )}
 
-      {/* --- FIXED STICKY TOP NAVBAR (Perfect Absolute Center Logo & Arrow-Free Buttons) --- */}
+      {/* --- FIXED STICKY TOP NAVBAR --- */}
       <nav className="fixed top-0 left-0 w-full z-50 px-4 md:px-12 py-3.5 sm:py-4 flex justify-between items-center backdrop-blur-md bg-[#040713]/90 border-b border-white/10 shadow-2xl">
         <div className="flex items-center z-10">
           <button
@@ -397,7 +397,7 @@ export default function RaahiHomePage() {
         </div>
       </section>
 
-      {/* --- WHAT IS RAAHI (STORY WITH OPEN BAR NIGHT LIGHT AMBIENCE) --- */}
+      {/* --- WHAT IS RAAHI --- */}
       <section className="py-24 md:py-36 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="reveal relative rounded-3xl overflow-hidden shadow-2xl h-[400px] sm:h-[500px]">
@@ -426,7 +426,7 @@ export default function RaahiHomePage() {
         </div>
       </section>
 
-      {/* --- AUTOMATIC CENTER-TURNING & SLIDING HIGH-END FOOD PLATES TRACK --- */}
+      {/* --- MASTERPIECES TRACK --- */}
       <section className="py-24 border-t border-white/10 overflow-hidden bg-black/30">
         <div className="text-center max-w-3xl mx-auto mb-16 px-6 reveal">
           <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37] font-semibold block mb-2">— THE MASTERPIECES —</span>
@@ -463,7 +463,7 @@ export default function RaahiHomePage() {
         </div>
       </section>
 
-      {/* --- EXPLORE THE MENU CATEGORIES --- */}
+      {/* --- MENU CATEGORIES --- */}
       <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/10">
         <div className="text-center max-w-3xl mx-auto mb-16 reveal">
           <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37] font-semibold block mb-2">— THE CUISINE —</span>
@@ -490,10 +490,9 @@ export default function RaahiHomePage() {
         </div>
       </section>
 
-      {/* --- THE ROOM: DUAL-COLUMN OPPOSITE VERTICAL SCROLLER & TEXT --- */}
+      {/* --- THE ROOM --- */}
       <section className="py-28 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center reveal">
-          
           <div className="relative h-[550px] overflow-hidden rounded-3xl bg-black/20 p-4 flex gap-4">
             <div className="w-1/2 overflow-hidden h-full relative">
               <div className="animate-scroll-up absolute top-0 left-0 w-full">
@@ -537,11 +536,10 @@ export default function RaahiHomePage() {
               </button>
             </div>
           </div>
-
         </div>
       </section>
 
-      {/* --- STATS SECTION WITH ANIMATED NUMBERS --- */}
+      {/* --- STATS SECTION --- */}
       <section className="py-24 bg-black/40 border-t border-white/10 text-center px-6">
         <span className="text-[10px] uppercase tracking-[0.4em] text-[#D4AF37] font-semibold block mb-2">— THE TALE SO FAR —</span>
         <h2 className="font-serif text-3xl sm:text-5xl text-white mb-16">A story worth telling.</h2>
@@ -572,7 +570,7 @@ export default function RaahiHomePage() {
         </div>
       </section>
 
-      {/* --- FOOTER (Clean, No Portal Links) --- */}
+      {/* --- FOOTER --- */}
       <footer id="location" className="bg-[#030408] border-t border-white/10 pt-20 pb-10 px-6 md:px-12 text-center">
         <div className="max-w-4xl mx-auto space-y-6 mb-12">
           <h2 className="font-serif text-3xl sm:text-5xl text-white">Join us at Raahi</h2>
@@ -680,12 +678,13 @@ export default function RaahiHomePage() {
                 <input required name="name" type="text" placeholder="Your Full Name" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
                 <input required name="phone" type="tel" placeholder="Phone Number" className="w-full bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37]" />
                 
+                {/* Fixed Date & Time inputs with min-w-0 and 16px font-size to prevent iOS Safari zoom/overflow bugs */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full box-border">
                   <div className="min-w-0 w-full overflow-hidden">
-                    <input required name="date" type="date" min={new Date().toISOString().split("T")[0]} className="w-full max-w-full box-border min-w-0 bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37] [color-scheme:dark]" />
+                    <input required name="date" type="date" min={new Date().toISOString().split("T")[0]} className="w-full max-w-full box-border min-w-0 bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-base sm:text-xs text-white outline-none focus:border-[#D4AF37] [color-scheme:dark]" />
                   </div>
                   <div className="min-w-0 w-full overflow-hidden">
-                    <input required name="time" type="time" className="w-full max-w-full box-border min-w-0 bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#D4AF37] [color-scheme:dark]" />
+                    <input required name="time" type="time" className="w-full max-w-full box-border min-w-0 bg-[#1F1C18] border border-white/10 rounded-xl px-4 py-3 text-base sm:text-xs text-white outline-none focus:border-[#D4AF37] [color-scheme:dark]" />
                   </div>
                 </div>
 
